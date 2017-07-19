@@ -69,13 +69,7 @@ public class WolfChatController {
 					logger.info("the wxBack openid is"+openid);	
 					logger.info("the backMsg  is"+infoMsg);
 					ChatUserInfoVo userInfoContent = JsonConvertor.fromJson(infoMsg,ChatUserInfoVo.class);						
-					wolfChatService.saveUserOpenInfo(userInfoContent);
-					/*try {
-						//String infoMsgUtf = new String(infoMsg.getBytes("ISO-8859-1"),"UTF-8").trim();						
-					} catch (Exception e) {
-						logger.error("the error  is"+e);
-						e.printStackTrace();
-					}	*/			
+					wolfChatService.saveUserOpenInfo(userInfoContent);		
 				}
 			}			
 		}
