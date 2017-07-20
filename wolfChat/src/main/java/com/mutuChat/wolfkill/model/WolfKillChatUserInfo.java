@@ -81,7 +81,7 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 		this.openId = openId;
 	}
 
-	@Column(name = "OPEN_IMG", length = 100)
+	@Column(name = "OPEN_IMG", length = 200)
 	public String getOpenImg() {
 		return this.openImg;
 	}
