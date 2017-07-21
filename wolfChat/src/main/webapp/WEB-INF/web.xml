@@ -64,6 +64,6 @@
 	</listener>
  
 	<welcome-file-list>
-		<welcome-file>/WEB-INF/jsp/userlogin.jsp</welcome-file>
+		<welcome-file>/WEB-INF/jsp/wolfKillMain.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

@@ -80,8 +80,8 @@ public class PospalServiceImpl implements IPospalService{
 		String dateStr = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(now);
 		String message = "success";
 		int size = points.size();
-		if (size > 200) {
-			size = 200;
+		if (size > 150) {
+			size = 150;
 		}
 		for (int i = 0; i < size; i++) {
 			PostPointParameter requestData = points.get(i);

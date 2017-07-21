@@ -11,6 +11,7 @@
  */
 package com.mutuChat.wolfkill.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,7 +178,7 @@ public class WolfKillController {
         }
         return message;
     }
-    /*@RequestMapping(value = "queryMemInfo", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
+    @RequestMapping(value = "queryMemInfo", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String queryMemInfo(HttpServletRequest request) {
     	logger.info(cMethod.getIpAddr(request) + "-queryMemInfo begin" );
@@ -236,7 +237,7 @@ public class WolfKillController {
     		logger.error("updatePospalPoint error" + e);
     	}
     	return message;
-    }*/
+    }
     private String getJSonFormatStringlist(List<String> list) {
         if (list == null || list.isEmpty()) {
             return "[]";

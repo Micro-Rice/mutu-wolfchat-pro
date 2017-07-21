@@ -22,7 +22,7 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -3191487298392858158L;
 	private int id;
-	private Integer playerId;
+	private String playerId;
 	private String playerPhone;
 	private String openId;
 	private String openImg;
@@ -34,7 +34,7 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public WolfKillChatUserInfo(int id, Integer playerId, String playerPhone, String openId,
+	public WolfKillChatUserInfo(int id, String playerId, String playerPhone, String openId,
 			String openImg) {
 		this.id = id;
 		this.playerId = playerId;
@@ -55,11 +55,11 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 	}
 
 	@Column(name = "PLAYER_ID")
-	public Integer getPlayerId() {
+	public String getPlayerId() {
 		return this.playerId;
 	}
 
-	public void setPlayerId(Integer playerId) {
+	public void setPlayerId(String playerId) {
 		this.playerId = playerId;
 	}
 

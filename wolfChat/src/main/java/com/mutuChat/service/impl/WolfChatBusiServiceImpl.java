@@ -81,7 +81,7 @@ public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
 				} else {
 					WolfKillChatUserInfo chatUser = wolfChatService.queryUserOpenInfoByOpenid(openid);
 					if (chatUser != null) {
-						chatUser.setPlayerId(Integer.parseInt(playerId));
+						chatUser.setPlayerId(playerId);
 						chatUser.setPlayerPhone(phone);
 						wolfChatService.savePlayerInfo(chatUser);
 					} else {
