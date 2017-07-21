@@ -65,7 +65,6 @@ $(function (){
 	var uid = "${uniqueId}";
 	playerData = eval("("+playerData+")");
 	if (playerData.length != 0) {
-		creatImg(uid,seq);
 		var mainData = playerData[0].val;
 		creatTablePer(mainData);
 		$("#sequence").text(seq);
@@ -135,6 +134,15 @@ function creatTablePer(mainData) {
 	$("#maxLevelNum").text(maxLevelNum);
 	var achiveNum = mainData.split("-")[14];
 	$("#achiveNum").text(achiveNum);
+	var urlImg =  mainData.split("-")[15];
+	var pathImg;
+	if (urlImg != "null") {
+		pathImg = urlImg;
+	} else {
+		pathImg = "<%=basePath%>images/mutu.jpg";
+	}
+	var $img = '<img style="width:90px;" src="'+pathImg+'"/>'
+	$("#circleImg").append($img);
 	
 	var pg = mainData.split("-")[3];
 	var pr = mainData.split("-")[4];
