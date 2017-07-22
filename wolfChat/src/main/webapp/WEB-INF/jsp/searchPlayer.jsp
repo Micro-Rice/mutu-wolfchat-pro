@@ -146,7 +146,12 @@ function createInfoTable(dataObj,matchNums,maxMatchNum) {
 		$td = $(temp);
 		$td.appendTo($tr);
 		
-		var pathImage = "<%=basePath%>images/pic"+killdata[4]+".jpg";
+		var pathImage;
+		if (killdata[8] != "null") {
+			pathImage = killdata[8];
+		} else {
+			pathImage = "<%=basePath%>images/mutu.jpg";
+		}
 		
 		var temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;" src="'+pathImage+'">'
 		+''+killdata[0]+'</a></td>';
