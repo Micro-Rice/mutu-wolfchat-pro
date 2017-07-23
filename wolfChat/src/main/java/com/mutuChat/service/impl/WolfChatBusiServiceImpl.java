@@ -12,8 +12,11 @@ import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 import com.mutuChat.wolfkill.utils.ComMethod;
 import com.mutuChat.wolfkill.vo.ChatErrorVo;
+import com.mutuChat.wolfkill.vo.ChatPlayerInfoVo;
 import com.mutuChat.wolfkill.vo.ChatTokenVo;
 import com.mutuChat.wolfkill.vo.ChatUserInfoVo;
+import com.mutuChat.wolfkill.vo.HisMatchVo;
+import com.mutuChat.wolfkill.vo.RoleInfoVo;
 import com.pospal.utils.tools.JsonConvertor;
 @Service("wolfChatBusiService")
 public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
@@ -94,5 +97,12 @@ public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
 		}
 		return errorMsg;
 	}
+
+	@Override
+	public ChatPlayerInfoVo getChatPlayerInfo(String playerId) {
+		// TODO 自动生成的方法存根
+		return null;
+	}
+
 
 }
