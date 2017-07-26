@@ -4,7 +4,9 @@ package com.mutuChat.wolfkill.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
 import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -26,8 +28,10 @@ public class WolfKillPerInfo implements java.io.Serializable {
 	private Integer totalNum;
 	private Integer wonNum;
 	private Integer achiveFre;
-
-	public WolfKillPerInfo() {
+	private String season;
+	private Integer roleTask;
+	
+    public WolfKillPerInfo() {
 	}
 
 	public WolfKillPerInfo(String playerName, String uniqueId) {
@@ -36,13 +40,15 @@ public class WolfKillPerInfo implements java.io.Serializable {
 	}
 
 	public WolfKillPerInfo(String playerName, String uniqueId, String roleName, Integer totalNum, Integer wonNum
-			,Integer achiveFre) {
+			,Integer achiveFre,String season,Integer roleTask) {
 		this.playerName = playerName;
 		this.uniqueId = uniqueId;
 		this.roleName = roleName;
 		this.totalNum = totalNum;
 		this.wonNum = wonNum;
 		this.achiveFre = achiveFre;
+		this.season = season;
+		this.roleTask = roleTask;
 	}
 
 	@Id
@@ -108,4 +114,22 @@ public class WolfKillPerInfo implements java.io.Serializable {
 	public void setAchiveFre(Integer achiveFre) {
 		this.achiveFre = achiveFre;
 	}
+	
+	@Column(name = "SEASON", length = 10)
+    public String getSeason() {
+        return this.season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+    
+    @Column(name = "ROLE_TASK")
+    public Integer getRoleTask() {
+        return roleTask;
+    }
+
+    public void setRoleTask(Integer roleTask) {
+        this.roleTask = roleTask;
+    }
 }

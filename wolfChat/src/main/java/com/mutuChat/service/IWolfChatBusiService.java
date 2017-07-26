@@ -22,6 +22,7 @@ public interface IWolfChatBusiService {
 	
 	String bindUserInfo(String playerId, String phone,String openid);
 	
-	ChatPlayerInfoVo getChatPlayerInfo(String playerId);	
+	ChatPlayerInfoVo getChatPlayerInfo(String playerId,String mSeason);	
+	
 	
 }

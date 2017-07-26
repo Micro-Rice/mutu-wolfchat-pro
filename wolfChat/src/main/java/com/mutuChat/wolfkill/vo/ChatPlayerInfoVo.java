@@ -20,9 +20,24 @@ public class ChatPlayerInfoVo {
 	BigDecimal pWolRate;
 	int pOthNum;
 	BigDecimal pOthRate;
+	int maxOrder;
+	String imgUrl;
 	List<RoleInfoVo> roleInfos = new ArrayList<RoleInfoVo>();
 	List<HisMatchVo> hisMatchs = new ArrayList<HisMatchVo>();
-	public List<RoleInfoVo> getRoleInfos() {
+	
+	public String getImgUrl() {
+        return imgUrl;
+    }
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+    public int getMaxOrder() {
+        return maxOrder;
+    }
+    public void setMaxOrder(int maxOrder) {
+        this.maxOrder = maxOrder;
+    }
+    public List<RoleInfoVo> getRoleInfos() {
 		return roleInfos;
 	}
 	public void setRoleInfos(List<RoleInfoVo> roleInfos) {

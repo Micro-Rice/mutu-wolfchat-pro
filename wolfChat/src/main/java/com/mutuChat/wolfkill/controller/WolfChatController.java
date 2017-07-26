@@ -68,10 +68,14 @@ public class WolfChatController {
 		ModelAndView mav = new ModelAndView("perChatInfo");
 		String playerId = request.getParameter("playerId");
 		/**
+		 * 赛季数据
+		 */
+		String mSeason = request.getParameter("mSeason");		
+		/**
 		 * 判断是否跳转过来的请求，如果是，则直接显示会员信息（只有绑定成功才能跳转）
 		 */
 		if (playerId != null) {
-			ChatPlayerInfoVo  chatPlayer = wolfChatBusiService.getChatPlayerInfo(playerId);
+			ChatPlayerInfoVo  chatPlayer = wolfChatBusiService.getChatPlayerInfo(playerId,mSeason);
 			mav.addObject("playerId",playerId);
 			mav.addObject("jsonChatPlayer",JsonConvertor.toJson(chatPlayer));
 		} else {
@@ -85,7 +89,7 @@ public class WolfChatController {
 			if (chatUser != null) {
 				if (chatUser.getPlayerId() != null) {
 					playerId = chatUser.getPlayerId();
-					ChatPlayerInfoVo  chatPlayer = wolfChatBusiService.getChatPlayerInfo(playerId);
+					ChatPlayerInfoVo  chatPlayer = wolfChatBusiService.getChatPlayerInfo(playerId,mSeason);
 					mav.addObject("playerId",playerId);
 					mav.addObject("jsonChatPlayer",JsonConvertor.toJson(chatPlayer));
 				} else {
