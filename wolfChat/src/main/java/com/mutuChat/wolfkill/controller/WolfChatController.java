@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.mutuChat.service.IWolfChatBusiService;
 import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
-import com.mutuChat.wolfkill.vo.ChatPlayerInfoVo;
 import com.pospal.utils.tools.JsonConvertor;
 
 @Controller
@@ -63,48 +62,9 @@ public class WolfChatController {
 		map.put("loginResult",errorMsg);
 		return map;
 	}
-	@RequestMapping(value = "forwardPerChat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
-	public ModelAndView forwardPerChat(HttpServletRequest request) {		
-		ModelAndView mav = new ModelAndView("perChatInfo");
-		String playerId = request.getParameter("playerId");
-		/**
-		 * 赛季数据
-		 */
-		String mSeason = request.getParameter("mSeason");		
-		/**
-		 * 判断是否跳转过来的请求，如果是，则直接显示会员信息（只有绑定成功才能跳转）
-		 */
-		if (playerId != null) {
-			ChatPlayerInfoVo  chatPlayer = wolfChatBusiService.getChatPlayerInfo(playerId,mSeason);
-			mav.addObject("playerId",playerId);
-			mav.addObject("jsonChatPlayer",JsonConvertor.toJson(chatPlayer));
-		} else {
-			/**
-			 * 先获取微信头像信息，判断用户是否绑定，如果没有绑定，跳转绑定页面，如果绑定，显示个人信息；
-			 */
-			String backmsg = null;
-			HttpSession session=request.getSession();
-			String userCode = request.getParameter("code");
-			WolfKillChatUserInfo chatUser = wolfChatBusiService.getAndSaveChatPlayerInfo(userCode, session, backmsg);
-			if (chatUser != null) {
-				if (chatUser.getPlayerId() != null) {
-					playerId = chatUser.getPlayerId();
-					ChatPlayerInfoVo  chatPlayer = wolfChatBusiService.getChatPlayerInfo(playerId,mSeason);
-					mav.addObject("playerId",playerId);
-					mav.addObject("jsonChatPlayer",JsonConvertor.toJson(chatPlayer));
-				} else {
-					String openid = chatUser.getOpenId();
-					String strJsonUser = JsonConvertor.toJson(chatUser);
-					mav.setViewName("userlogin");
-					mav.addObject("rMsg",backmsg);
-					mav.addObject("openid",openid);
-					mav.addObject("userInfo",strJsonUser);
-				}
-			} else {
-				logger.error("the WolfKillChatUserInfo is null");
-				logger.error("the backmsg is " + backmsg);
-			}
-		}				
+	@RequestMapping(value = "forwardPerChat", method = RequestMethod.GET)
+	public ModelAndView forwardPerChat(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("chatPerInfo");		
 		return mav;
 	}
 }

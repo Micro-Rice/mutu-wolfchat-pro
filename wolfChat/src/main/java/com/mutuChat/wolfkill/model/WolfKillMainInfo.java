@@ -33,7 +33,6 @@ public class WolfKillMainInfo implements java.io.Serializable {
 	private String level;
 	private Integer levelMaxNum;
 	private Integer achiveNum;
-	private String season;
 
 	public WolfKillMainInfo() {
 	}
@@ -45,7 +44,7 @@ public class WolfKillMainInfo implements java.io.Serializable {
 
 	public WolfKillMainInfo(String playerName, String uniqueId, Integer peoNum, Integer peoWon, Integer wolfNum,
 			Integer wolfWon, Integer otherNum, Integer otherWon, Integer mvp, Integer levelNum, String level,
-			Integer levelMaxNum,Integer achiveNum,String season) {
+			Integer levelMaxNum,Integer achiveNum) {
 		this.playerName = playerName;
 		this.uniqueId = uniqueId;
 		this.peoNum = peoNum;
@@ -59,7 +58,6 @@ public class WolfKillMainInfo implements java.io.Serializable {
 		this.level = level;
 		this.levelMaxNum = levelMaxNum;
 		this.achiveNum = achiveNum;
-		this.season = season;
 	}
 
 	@Id
@@ -189,14 +187,5 @@ public class WolfKillMainInfo implements java.io.Serializable {
 	public void setAchiveNum(Integer achiveNum) {
 		this.achiveNum = achiveNum;
 	}
-	
-	@Column(name = "SEASON", length = 10)
-    public String getSeason() {
-        return this.season;
-    }
-
-    public void setSeason(String season) {
-        this.season = season;
-    }
 
 }

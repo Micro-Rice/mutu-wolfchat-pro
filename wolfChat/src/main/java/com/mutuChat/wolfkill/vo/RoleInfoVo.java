@@ -8,7 +8,7 @@ public class RoleInfoVo {
 	BigDecimal rWrate;
 	int rAchiveFre;
 	int rOrder;
-	int rtaskNum;
+	String rtaskNum;
 	public String getrName() {
 		return rName;
 	}
@@ -39,10 +39,10 @@ public class RoleInfoVo {
 	public void setrOrder(int rOrder) {
 		this.rOrder = rOrder;
 	}
-	public int getRtaskNum() {
+	public String getRtaskNum() {
 		return rtaskNum;
 	}
-	public void setRtaskNum(int rtaskNum) {
+	public void setRtaskNum(String rtaskNum) {
 		this.rtaskNum = rtaskNum;
 	}
 	
