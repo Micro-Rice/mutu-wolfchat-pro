@@ -20,18 +20,18 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mutuChat.service.IWolfChatService;
 import com.mutuChat.service.IWolfKillServive;
 import com.mutuChat.wolfkill.core.QueryConditions;
 import com.mutuChat.wolfkill.dao.IWolfChatDao;
 import com.mutuChat.wolfkill.dao.IWolfKillDao;
 import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillMainInfo;
-import com.mutuChat.wolfkill.model.WolfKillMainInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPerInfo;
-import com.mutuChat.wolfkill.model.WolfKillPerInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 import com.mutuChat.wolfkill.utils.StringUtils;
 import com.mutuChat.wolfkill.vo.CusInfoVo;
@@ -60,7 +60,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     private final static String LINE = "-";
     private final static String UNDERLINE = "_";
     private final static String UNIQUE_ID="uniqueId";
-    private final static String MATCH_NUM = "matchNum";
+    private final static String PLAYERNAME="playerName";
+    private final static String SEASON = "season";
     private final static String ROLE_NAME="roleName";
     private final static String ZERO="0";
     private final static String ONE="1";
@@ -103,20 +104,18 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     @Resource
     private IWolfChatDao wolfChatDao;
     
+    @Autowired
+    private IWolfChatService wolfChatService;
+    
+    
+    
     public List<String> getWolfKillMainData(int showSize,String matchNum) {        
         List<String> resultDatas = new ArrayList<String>();        
         QueryConditions condition = new QueryConditions(); 
         String orderBy = "levelNum desc";
         condition.setOrderBy(orderBy);
-        List<WolfKillMainInfo> mainDatas = null;
-        List<WolfKillMainInfoHistory> mainHisDatas = null;
-        if (StringUtils.checkIsNum(matchNum) && Integer.parseInt(matchNum) > 0) {
-            condition.setConditionEqual(MATCH_NUM, Integer.parseInt(matchNum));
-            mainHisDatas = wolfKillDao.queryMainHisDataByCondition(condition);
-            mainDatas = convertMainDatas(mainHisDatas);
-        } else {
-            mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
-        }
+        condition.setConditionEqual(SEASON, matchNum);
+        List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition);
         int length;
         if (mainDatas != null) {
             if (mainDatas.size() > showSize) {
@@ -136,23 +135,11 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		List<String> resultDatas = new ArrayList<String>(); 
 		QueryConditions condition = new QueryConditions();
 		condition.setConditionEqual(UNIQUE_ID, uniqueId);
+		condition.setConditionEqual(SEASON, matchNum);
 		
-		List<WolfKillMainInfo> mainDatas = null;
-		List<WolfKillPerInfo> perDatas = null;
-		List<WolfKillMainInfoHistory> mainHisDatas = null;
-		List<WolfKillPerInfoHistory> perHisDatas = null;
-		if (!matchNum.isEmpty()) {
-			if (StringUtils.checkIsNum(matchNum) && Integer.parseInt(matchNum) > 0) {
-			    condition.setConditionEqual(MATCH_NUM, Integer.parseInt(matchNum));
-			    mainHisDatas = wolfKillDao.queryMainHisDataByCondition(condition);
-			    perHisDatas = wolfKillDao.queryPersonHisDataCondition(condition);
-			    mainDatas = convertMainDatas(mainHisDatas);
-			    perDatas = convertPerDatas(perHisDatas);		    
-			} else {
-			    mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
-		        perDatas = wolfKillDao.queryPersonDataCondition(condition);
-			}
-		}		
+		List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition);
+		List<WolfKillPerInfo> perDatas = wolfKillDao.queryPersonDataCondition(condition);
+		
 		if (mainDatas != null && perDatas != null) {
 			WolfKillMainInfo mainData = mainDatas.get(0);
 			String mainInfo = parseMainInfo(mainData);
@@ -166,34 +153,30 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		return resultDatas;
 	}
 	
-	public String getPlayerMainDataByUid(String playerUid,String matchNum) {	    
-		String resultData = null;
+	public List<String> getPlayerMainDataByUid(String playerUid) {	    
+		List<String> resultDatas = new ArrayList<String>();
         QueryConditions condition = new QueryConditions();
-        String orderBy = "levelNum desc";
-        condition.setOrderBy(orderBy);
-        List<WolfKillMainInfo> mainDatas = null;
-        List<WolfKillMainInfoHistory> mainHisDatas = null;
-        if (StringUtils.checkIsNum(matchNum) && Integer.parseInt(matchNum) > 0) {
-            condition.setConditionEqual(MATCH_NUM, Integer.parseInt(matchNum));
-            mainHisDatas = wolfKillDao.queryMainHisDataByCondition(condition);
-            mainDatas = convertMainDatas(mainHisDatas);
-        } else {
-            mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
-        }        
+        condition.setConditionEqual(UNIQUE_ID, playerUid);             
         /**
-         * 只支持Uid查询；名字查询暂不支持
+         * 支持Uid查询；名字查询
          */
-        if (StringUtils.checkIsNum(playerUid)) {
-        	for (int i = 0; i < mainDatas.size(); i++) {
-        		WolfKillMainInfo mainData = mainDatas.get(i);
-        		String pUid = mainData.getUniqueId();
-        		if (pUid != null && pUid.equals(playerUid)) {
-        			resultData = parsePlayerData(mainData,i+1);
-        			break;
-        		}
-        	}
+        if (playerUid != null) {
+            if (StringUtils.checkIsNum(playerUid)) {
+                condition.setConditionEqual(UNIQUE_ID, playerUid);
+            } else {
+                condition.setConditionEqual(PLAYERNAME, playerUid);
+            }
+        }
+        List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition);
+        for (int i = 0; i < mainDatas.size(); i++) {
+            WolfKillMainInfo mainData = mainDatas.get(i);
+            String playerId = mainData.getUniqueId();
+            String season = mainData.getSeason();
+            int pOrder = wolfChatService.getLevelOrderById(playerId, season);
+            String resultData = parsePlayerData(mainData,pOrder);
+            resultDatas.add(resultData);
         }         
-        return resultData;       
+        return resultDatas;       
 	}
 	
 	public String updataUserInfo(String userInfo) {
@@ -258,7 +241,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	        	} else {
 	        		mainInfo.setLevel(level);
 	        	}
-	        	mainInfo.setPlayerName(info.getName());	        	
+	        	//mainInfo.setPlayerName(info.getName());	        	
 	        	mainInfo.setLevelNum(levelnum);
 	        	mainInfo.setMvp(mvp);
 	        	mainInfo.setOtherNum(on);
@@ -284,7 +267,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	        		}
 	        		perInfo.setTotalNum(rn);
 	        		perInfo.setWonNum(rw);
-	        		perInfo.setPlayerName(info.getName());
+	        		//perInfo.setPlayerName(info.getName());
 	        		perInfo.setAchiveFre(achiveFre);
 	        		perInfos.add(perInfo);
 	        	} else {
@@ -331,50 +314,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		wolfKillDao.saveMainDataList(mainInfos);
 		wolfKillDao.savePerDataList(perInfos);
 		return "success||update memInfo success";
-	}
-	private List<WolfKillMainInfo> convertMainDatas (List<WolfKillMainInfoHistory> hisDatas) {
-	    List<WolfKillMainInfo> mainDatas = new ArrayList<WolfKillMainInfo>();
-	    if (hisDatas != null) {
-	        for (int i = 0; i < hisDatas.size(); i++) {
-	            WolfKillMainInfoHistory hisData = hisDatas.get(i);
-	            WolfKillMainInfo mainData = new WolfKillMainInfo();
-	            mainData.setId(hisData.getId());
-	            mainData.setPlayerName(hisData.getPlayerName());
-	            mainData.setUniqueId(hisData.getUniqueId());
-	            mainData.setPeoNum(hisData.getPeoNum());
-	            mainData.setPeoWon(hisData.getPeoWon());
-	            mainData.setWolfNum(hisData.getWolfNum());
-	            mainData.setWolfWon(hisData.getWolfWon());
-	            mainData.setOtherNum(hisData.getOtherNum());
-	            mainData.setOtherWon(hisData.getOtherWon());
-	            mainData.setMvp(hisData.getMvp());
-	            mainData.setLevelNum(hisData.getLevelNum());
-	            mainData.setLevel(hisData.getLevel());
-	            mainData.setLevelMaxNum(hisData.getLevelMaxNum());
-	            mainData.setAchiveNum(hisData.getAchiveNum());
-	            mainDatas.add(mainData);
-	        }
-	    }
-	    return mainDatas;
-	}
-	private List<WolfKillPerInfo> convertPerDatas (List<WolfKillPerInfoHistory> hisDatas) {
-        List<WolfKillPerInfo> perDatas = new ArrayList<WolfKillPerInfo>();
-        if (hisDatas != null) {
-            for (int i = 0; i < hisDatas.size(); i++) {
-                WolfKillPerInfoHistory hisData = hisDatas.get(i);
-                WolfKillPerInfo perData = new WolfKillPerInfo();
-                perData.setId(hisData.getId());
-                perData.setPlayerName(hisData.getPlayerName());
-                perData.setUniqueId(hisData.getUniqueId());
-                perData.setRoleName(hisData.getRoleName());
-                perData.setTotalNum(hisData.getTotalNum());
-                perData.setWonNum(hisData.getWonNum());
-                perData.setAchiveFre(hisData.getAchiveFre());                
-                perDatas.add(perData);
-            }
-        }
-        return perDatas;
-    }
+	}	
 	private CusInfoVo parseUserInfo(String userInfo) {
 		CusInfoVo info = new CusInfoVo();
 		if (userInfo.indexOf(LINE) < 0 || userInfo.split(LINE).length != 6) {
@@ -570,6 +510,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
         String level = playerData.getLevel();
         String name = playerData.getPlayerName();
         String uniqueId = playerData.getUniqueId();
+        String season = playerData.getSeason();
         QueryConditions condition = new QueryConditions();
         condition.setConditionEqual("playerId", uniqueId);
         WolfKillChatUserInfo userInfo = wolfChatDao.findChatUserInfo(condition);
@@ -593,7 +534,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
         .append(level).append(LINE)
         .append(levelNum).append(LINE)
         .append(order).append(LINE)
-        .append(urlImg);
+        .append(urlImg).append(LINE)
+        .append(season);
        
         return tempBuffer.toString();
     }
@@ -862,35 +804,18 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	@Override
-	public List<String> getMatchNums(String playerUid) {
-		List<String> res = new ArrayList<String>();
-		QueryConditions condition = new QueryConditions(); 
-		condition.setConditionEqual(UNIQUE_ID, playerUid);
-		String orderBy = "matchNum desc";
-        condition.setOrderBy(orderBy);
-		List<Integer> matchNums = wolfKillDao.queryMatchNum(condition);
-		if (matchNums != null) {
-			for (int i = 0; i < matchNums.size(); i++) {
-				int temp = matchNums.get(i);
-				if (!res.contains(String.valueOf(temp))) {
-					res.add(String.valueOf(temp));
-				}
-			}
-		}		
-		return res;
-	}
-
-	@Override
 	public int getMaxMatchNum() {
 		int max = 0;
-		QueryConditions condition = new QueryConditions(); 
-		List<Integer> matchNums = wolfKillDao.queryMatchNum(condition);
-		if (matchNums != null) {
-			for (int i = 0; i < matchNums.size(); i++) {
-				int temp = matchNums.get(i);
-				if (max < temp) {
-					max = temp;
+		List<String> seasons = wolfChatDao.findAllSeasons();
+		if (seasons != null) {
+			for (int i = 0; i < seasons.size(); i++) {
+				String temp = seasons.get(i);
+				if (temp != null && StringUtils.checkIsNum(temp)) {
+				    if (max < Integer.parseInt(temp)) {
+	                    max = Integer.parseInt(temp);
+	                }
 				}
+				
 			}
 		}
 		return max;

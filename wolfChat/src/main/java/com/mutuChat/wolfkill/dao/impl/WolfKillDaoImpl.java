@@ -20,9 +20,7 @@ import com.mutuChat.wolfkill.core.QueryConditions;
 import com.mutuChat.wolfkill.dao.IWolfKillDao;
 import com.mutuChat.wolfkill.model.MutuMemInfo;
 import com.mutuChat.wolfkill.model.WolfKillMainInfo;
-import com.mutuChat.wolfkill.model.WolfKillMainInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPerInfo;
-import com.mutuChat.wolfkill.model.WolfKillPerInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 
 
@@ -90,23 +88,7 @@ public class WolfKillDaoImpl extends BaseDao implements IWolfKillDao{
 		super.deleteAll(pospalInfos);
 	}
 
-    @Override
-    public List<WolfKillMainInfoHistory> queryMainHisDataByCondition(QueryConditions condition) {
-        String hql = "from WolfKillMainInfoHistory ";
-        return super.find(hql, condition);
-    }
 
-    @Override
-    public List<WolfKillPerInfoHistory> queryPersonHisDataCondition(QueryConditions condition) {
-        String hql = "from WolfKillPerInfoHistory ";
-        return super.find(hql, condition);
-    }
-
-	@Override
-	public List<Integer> queryMatchNum(QueryConditions condition) {
-		String hql = "select matchNum from WolfKillMainInfoHistory ";
-		return super.find(hql, condition);
-	}
 
     @Override
     public List<MutuMemInfo> queryMemInfoByLocal(QueryConditions condition) {

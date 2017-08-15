@@ -59,13 +59,11 @@
 <script type="text/javascript" src="./js/tool.js"></script>
 <script type="text/javascript">
 $(function (){
-	var maxMatchNum = "${maxMatchNum}";
-	var matchNums = "${matchNums} ";
-	matchNums = eval("("+matchNums+")");	
+	var maxMatchNum = "${maxMatchNum}";	
 	var playerData = "${pMainDatas}";
 	playerData = eval("("+playerData+")");	
 	if (playerData.length != 0) {
-		createInfoTable(playerData,matchNums,maxMatchNum);
+		createInfoTable(playerData,maxMatchNum);
 	} else {
 		createFailerInfo();
 	}
@@ -124,7 +122,7 @@ function findMax(dataObj,mode) {
 	}
 	return max;
 }
-function createInfoTable(dataObj,matchNums,maxMatchNum) {
+function createInfoTable(dataObj,maxMatchNum) {
 	var length = dataObj.length;
 	var maxAchive = findMax(dataObj,"achiveNum");
 	var maxMvp = findMax(dataObj,"mvp");
@@ -133,12 +131,11 @@ function createInfoTable(dataObj,matchNums,maxMatchNum) {
 		var killdata = dataObj[i].val.split("-");
 		
 		var $tr = $('<tr id=Ftr_'+i+' class="infoTr"></tr>'); 
-		var temp;
-		if (i == 0) {
-			temp = '<td id=matchNum_'+i+'>S'+maxMatchNum+'</td>'
-		} else {
-			temp = '<td id=matchNum_'+i+'>S'+matchNums[i-1].val+'</td>'
+		var season = killdata[9];
+		if (season == "0") {
+			season = maxMatchNum;
 		}
+		var temp = '<td id=matchNum_'+i+'>S'+season+'</td>';
 		$td = $(temp);
 		$td.appendTo($tr);
 		

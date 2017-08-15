@@ -51,9 +51,11 @@ $(function (){
 	
 	if (openid == "") {
 		$.alert("系统繁忙,请稍后再试!");
+		console.log("openid is null");
 	} else {
 		if (!!rMsg) {
 			$.alert("系统繁忙,请稍后再试!");
+			console.log("rMsg is"+rMsg);
 		} else {
 			if (!!userInfo) {
 				pathImage = userInfo.openImg;
@@ -66,11 +68,16 @@ $(function (){
 					$("#phone").val(userInfo.playerPhone);
 					$("#phone").attr("disabled","disabled");
 					$.alert("已绑定会员卡号!",function(){
-						window.location.href = "http://www.mutuclub.com";
+						var playerIdEncode = base64encode(userInfo.playerId.toString());
+						console.log(userInfo.playerId);
+						console.log(playerIdEncode);
+						var url = "getWolfkill?player="+playerIdEncode;
+						window.location.href = url;
 					})
 				}
 			} else {
 				$.alert("系统繁忙,请稍后再试!");
+				console.log("userInfo is empty");
 			}
 		}
 	}
@@ -93,14 +100,16 @@ $(function (){
 				data : user,
 				success: function(data){
 					if ("error1" ==  data.loginResult) {
-						$.alert("会员号手机信息有误!");
+						$.alert("会员号手机信息有误!如忘记,请联系管理员");
 					} else if ("error2" ==  data.loginResult) {
 						$.alert("会员号不存在,请先注册!");
 					} else if ("error3" ==  data.loginResult) {
 						$.alert("绑定失败,请稍后再试!");
 					} else {
 						$.alert("绑定会员卡成功!",function(){
-							window.location.href = "http://www.mutuclub.com";
+							var playerIdEncode = base64encode(name);
+							var url = "getWolfkill?player="+playerIdEncode;
+							window.location.href = url;
 						});						
 					}
 				},
@@ -112,7 +121,7 @@ $(function (){
 	});	
 	
 	$("#findusername").click(function(){
-		$.alert("请联系MUTU管理员,联系电话010-56123556!");
+		$.alert("请联系MUTU管理员,联系电话12345678!");
 	});
 	$("#userform").on("focus",".weui_input",function(){
 		clearErrMsg($(this));

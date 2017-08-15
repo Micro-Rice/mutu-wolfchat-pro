@@ -42,7 +42,7 @@ public interface IWolfKillServive {
     /*
      * 查询个人概况信息
      */
-    public String getPlayerMainDataByUid(String playerUid,String matchNum);
+    public List<String> getPlayerMainDataByUid(String playerUid);
     /**
      * 查询玩家基本信息
      */
@@ -60,10 +60,6 @@ public interface IWolfKillServive {
      */
     public List<PostPointParameter> getPospalPointChange();
     
-    /**
-     * 查询个人历史赛季数
-     */
-    public List<String> getMatchNums(String playeyUid);
     /**
      * 查询最大的历史赛季
      */

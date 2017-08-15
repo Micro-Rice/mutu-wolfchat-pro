@@ -16,9 +16,7 @@ import java.util.List;
 import com.mutuChat.wolfkill.core.QueryConditions;
 import com.mutuChat.wolfkill.model.MutuMemInfo;
 import com.mutuChat.wolfkill.model.WolfKillMainInfo;
-import com.mutuChat.wolfkill.model.WolfKillMainInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPerInfo;
-import com.mutuChat.wolfkill.model.WolfKillPerInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 
 
@@ -37,9 +35,7 @@ import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 public interface IWolfKillDao {
     
     public List<WolfKillMainInfo> queryMainDataByCondition(QueryConditions condition);
-    public List<WolfKillMainInfoHistory> queryMainHisDataByCondition(QueryConditions condition);
     public List<WolfKillPerInfo> queryPersonDataCondition(QueryConditions condition);
-    public List<WolfKillPerInfoHistory> queryPersonHisDataCondition(QueryConditions condition);
     
     public void saveMainData(WolfKillMainInfo mainInfo);
     public void savePerData(WolfKillPerInfo perInfo);
@@ -54,7 +50,5 @@ public interface IWolfKillDao {
     public List<MutuMemInfo> queryMemInfoByLocal(QueryConditions condition);
     
     public void deletePospalMemList(List<WolfKillPospalInfo> pospalInfos);
-    
-    public List<Integer> queryMatchNum(QueryConditions condition);
     
 }

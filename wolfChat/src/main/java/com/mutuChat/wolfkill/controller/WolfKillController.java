@@ -126,30 +126,10 @@ public class WolfKillController {
     public ModelAndView searchPlayer(HttpServletRequest request) {
         String playerUid = request.getParameter("player");
         ModelAndView mav = new ModelAndView("searchPlayer");
-        List<String> wolfDatas = new ArrayList<String>();
-        List<String> matchNums = wolfKillService.getMatchNums(playerUid);
-        if (!playerUid.isEmpty() && playerUid != null) {
-        	/**
-        	 * 当季数据
-        	 */
-        	String data = wolfKillService.getPlayerMainDataByUid(playerUid, "0");
-        	if (data != null) {
-    			wolfDatas.add(data);
-    		}
-        	/**
-        	 * 历史数据
-        	 */
-        	for (int i = 0; i < matchNums.size(); i++) {
-        		String hisdata = wolfKillService.getPlayerMainDataByUid(playerUid, matchNums.get(i));
-        		if (hisdata != null) {
-        			wolfDatas.add(hisdata);
-        		}
-        	}       	
-        }
+        List<String> wolfDatas = wolfKillService.getPlayerMainDataByUid(playerUid);
         int maxMatchNum = wolfKillService.getMaxMatchNum() + 1;
         mav.addObject("maxMatchNum",maxMatchNum);
         mav.addObject("pMainDatas", getJSonFormatStringlist(wolfDatas));
-        mav.addObject("matchNums",getJSonFormatStringlist(matchNums));
         return mav;
     }
     @RequestMapping(value = "queryPlayerId", method = RequestMethod.GET,produces="text/html;charset=UTF-8")

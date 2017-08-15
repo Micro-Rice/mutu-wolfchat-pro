@@ -26,8 +26,9 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 	private String playerPhone;
 	private String openId;
 	private String openImg;
-
-	public WolfKillChatUserInfo() {
+	private String playerTag;
+	
+    public WolfKillChatUserInfo() {
 	}
 
 	public WolfKillChatUserInfo(int id) {
@@ -35,12 +36,13 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 	}
 
 	public WolfKillChatUserInfo(int id, String playerId, String playerPhone, String openId,
-			String openImg) {
+			String openImg,String playerTag) {
 		this.id = id;
 		this.playerId = playerId;
 		this.playerPhone = playerPhone;
 		this.openId = openId;
 		this.openImg = openImg;
+		this.playerTag = playerTag;
 	}
 
 	@Id
@@ -89,5 +91,14 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 	public void setOpenImg(String openImg) {
 		this.openImg = openImg;
 	}
+	
+	@Column(name = "PLAYER_TAG", length = 200)
+	public String getPlayerTag() {
+        return playerTag;
+    }
+
+    public void setPlayerTag(String playerTag) {
+        this.playerTag = playerTag;
+    }
 
 }
