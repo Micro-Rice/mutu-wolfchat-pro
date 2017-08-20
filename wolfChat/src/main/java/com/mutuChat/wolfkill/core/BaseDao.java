@@ -43,7 +43,7 @@ public class BaseDao {
     @Qualifier("sessionFactory")
     private SessionFactory sessionFactory;
     
-    public static final int MAX_RETURN_RECORD = 1000;
+    public static final int MAX_RETURN_RECORD = 2000;
 
     /**
      * 
