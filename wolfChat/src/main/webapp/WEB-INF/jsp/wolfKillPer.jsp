@@ -141,7 +141,7 @@ function creatTablePer(mainData) {
 	} else {
 		pathImg = "<%=basePath%>images/mutu.jpg";
 	}
-	var $img = '<img style="width:90px;" src="'+pathImg+'"/>'
+	var $img = '<img style="width:90px;height:90px" src="'+pathImg+'"/>'
 	$("#circleImg").append($img);
 	
 	var pg = mainData.split("-")[3];
