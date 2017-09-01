@@ -13,6 +13,7 @@ package com.mutuChat.service;
 
 import java.util.List;
 
+import com.mutuChat.wolfkill.vo.ChatPlayerInfoVo;
 import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 import com.pospal.vo.ImageResponseDataDetail;
 import com.pospal.vo.PostPointParameter;
@@ -34,7 +35,7 @@ public interface IWolfKillServive {
     /*
      * 查询所有人概况信息
      */
-    public List<String> getWolfKillMainData(int showSize,String matchNum);
+    public List<ChatPlayerInfoVo> getWolfKillMainData(int showSize,String matchNum);
     /*
      * 查询个人详细信息
      */
@@ -46,7 +47,7 @@ public interface IWolfKillServive {
     /**
      * 查询玩家基本信息
      */
-    public List<PlayerInfoVo> getPlayerBaseInfo();
+    public List<PlayerInfoVo> getPlayerBaseInfo(String jsonDate);
     /**
      * 处理个人数据
      */

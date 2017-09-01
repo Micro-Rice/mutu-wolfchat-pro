@@ -20,8 +20,23 @@ public class ChatPlayerInfoVo {
 	BigDecimal pWolRate;
 	int pOthNum;
 	BigDecimal pOthRate;
+	//网页显示用
+	String playerId;
+	int mvp;
 	List<RoleInfoVo> roleInfos = new ArrayList<RoleInfoVo>();
 	List<HisMatchVo> hisMatchs = new ArrayList<HisMatchVo>();
+	public int getMvp() {
+		return mvp;
+	}
+	public void setMvp(int mvp) {
+		this.mvp = mvp;
+	}
+	public String getPlayerId() {
+		return playerId;
+	}
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
+	}
 	public List<RoleInfoVo> getRoleInfos() {
 		return roleInfos;
 	}

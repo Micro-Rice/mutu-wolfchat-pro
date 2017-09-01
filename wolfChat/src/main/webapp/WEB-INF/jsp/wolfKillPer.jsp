@@ -60,12 +60,12 @@
 $(function (){
 	var matchNum = "${matchNum}";
 	var maxMatchNum = "${maxMatchNum}";
-	var playerData = "${perDatas}";
+	var playerData = '${perDatas}';
 	var seq = "${sequence}";
 	var uid = "${uniqueId}";
 	playerData = eval("("+playerData+")");
 	if (playerData.length != 0) {
-		var mainData = playerData[0].val;
+		var mainData = playerData[0];
 		creatTablePer(mainData);
 		$("#sequence").text(seq);
 		if (playerData.length > 1) {
@@ -98,9 +98,9 @@ $(function (){
 });
 function findMax(playerData) {
 	var length = playerData.length;
-	var max = playerData[1].val.split("-")[1];
+	var max = playerData[1].split("-")[1];
 	for (var i = 1; i < length; i++) {
-		var tg = playerData[i].val.split("-")[1];
+		var tg = playerData[i].split("-")[1];
 		if (+max < +tg) {
 			max = tg;
 		}
@@ -192,12 +192,12 @@ function creatTableInfo(playerData) {
 	var length = playerData.length;
 	var maxTotal = findMax(playerData);
 	for (var i = 1; i < length; i++) {
-		var roleName = playerData[i].val.split("-")[0];
+		var roleName = playerData[i].split("-")[0];
 		var displayName = getDisName(roleName);
 		var cgName = getCgName(roleName);
-		var total = playerData[i].val.split("-")[1];
-		var rate = playerData[i].val.split("-")[2];
-		var achiveFre = playerData[i].val.split("-")[3];
+		var total = playerData[i].split("-")[1];
+		var rate = playerData[i].split("-")[2];
+		var achiveFre = playerData[i].split("-")[3];
 		var $tr = $('<tr id=Ftr_'+i+' class="perTr"></tr>'); 
 		var temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="hero-img-list"src="<%=basePath%>images/'+roleName+'.jpg">'
 		+''+displayName+'</a></td>';

@@ -60,9 +60,9 @@
 <script type="text/javascript">
 $(function (){
 	var maxMatchNum = "${maxMatchNum}";
-	var matchNums = "${matchNums} ";
+	var matchNums = '${matchNums}';
 	matchNums = eval("("+matchNums+")");	
-	var playerData = "${pMainDatas}";
+	var playerData = '${pMainDatas}';
 	playerData = eval("("+playerData+")");	
 	if (playerData.length != 0) {
 		createInfoTable(playerData,matchNums,maxMatchNum);
@@ -98,25 +98,25 @@ function findMax(dataObj,mode) {
 	var length = dataObj.length;
 	var max;
 	if (mode == "achiveNum") {
-		max = dataObj[0].val.split("-")[1];
+		max = dataObj[0].split("-")[1];
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].val.split("-")[1];
+			var tg = dataObj[i].split("-")[1];
 			if (+max < +tg) {
 				max = tg;
 			}
 		}
 	} else if (mode == "mvp") {
-		max = dataObj[0].val.split("-")[3];
+		max = dataObj[0].split("-")[3];
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].val.split("-")[3];
+			var tg = dataObj[i].split("-")[3];
 			if (+max < +tg) {
 				max = tg;
 			}
 		}
 	} else if (mode = "levelnum") {
-		max = dataObj[0].val.split("-")[6];
+		max = dataObj[0].split("-")[6];
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].val.split("-")[6];
+			var tg = dataObj[i].split("-")[6];
 			if (+max < +tg) {
 				max = tg;
 			}
@@ -130,14 +130,14 @@ function createInfoTable(dataObj,matchNums,maxMatchNum) {
 	var maxMvp = findMax(dataObj,"mvp");
 	var maxLevel = findMax(dataObj,"levelnum");
 	for (var i = 0; i < length; i++) {
-		var killdata = dataObj[i].val.split("-");
+		var killdata = dataObj[i].split("-");
 		
 		var $tr = $('<tr id=Ftr_'+i+' class="infoTr"></tr>'); 
 		var temp;
 		if (i == 0) {
 			temp = '<td id=matchNum_'+i+'>S'+maxMatchNum+'</td>'
 		} else {
-			temp = '<td id=matchNum_'+i+'>S'+matchNums[i-1].val+'</td>'
+			temp = '<td id=matchNum_'+i+'>S'+matchNums[i-1]+'</td>'
 		}
 		$td = $(temp);
 		$td.appendTo($tr);

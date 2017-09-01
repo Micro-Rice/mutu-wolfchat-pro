@@ -36,6 +36,7 @@ import com.pospal.vo.PostPointParameter;
 import com.mutuChat.service.IPospalService;
 import com.mutuChat.service.IWolfKillServive;
 import com.mutuChat.wolfkill.utils.ComMethod;
+import com.mutuChat.wolfkill.utils.JsonUtils;
 import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 
 
@@ -55,11 +56,6 @@ import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 @Controller
 public class WolfKillController {
     
-    private static final String LEFT_BRACKET = "[";
-    private static final String LABEL_ITEM = "{label:'";
-    private static final String VAL_ITEM = "',val:'";
-    private static final String RIGHT_QUOTE = "'";
-    private static final String RIGHT_BRACKET = "]";
 	private final static int SHOWSIZE = 20;
     private static Logger logger = Logger.getLogger(WolfKillController.class);
     private static ComMethod cMethod = new ComMethod();
@@ -76,7 +72,7 @@ public class WolfKillController {
         Map<String, Object> map = new HashMap<String, Object>();
         String matchNum = request.getParameter("matchNum");
         List<String> wolfDatas = wolfKillService.getWolfKillMainData(SHOWSIZE,matchNum);
-        map.put("playerInfo", getJSonFormatStringlist(wolfDatas));
+        map.put("playerInfo", JsonUtils.toJson(wolfDatas));
         logger.info(cMethod.getIpAddr(request) + "-login success" );
         return map;
     }
@@ -85,7 +81,7 @@ public class WolfKillController {
     public ModelAndView getWolfkillAllData(HttpServletRequest request) {
     	ModelAndView mav = new ModelAndView("playerInfo");
         List<String> wolfDatas = wolfKillService.getWolfKillMainData(Integer.MAX_VALUE,"0");
-        mav.addObject("pInfo", getJSonFormatStringlist(wolfDatas));
+        mav.addObject("pInfo", JsonUtils.toJson(wolfDatas));
         logger.info(cMethod.getIpAddr(request) + "-login success:getWolfkill" );
         return mav;
     }
@@ -114,7 +110,7 @@ public class WolfKillController {
 			}       	       	
         }        
         ModelAndView mav = new ModelAndView("wolfKillPer");
-        mav.addObject("perDatas", getJSonFormatStringlist(wolfPerDatas));
+        mav.addObject("perDatas", JsonUtils.toJson(wolfPerDatas));
         mav.addObject("sequence",sequence);
         mav.addObject("uniqueId",user);
         mav.addObject("matchNum",matchNum);
@@ -148,15 +144,16 @@ public class WolfKillController {
         }
         int maxMatchNum = wolfKillService.getMaxMatchNum() + 1;
         mav.addObject("maxMatchNum",maxMatchNum);
-        mav.addObject("pMainDatas", getJSonFormatStringlist(wolfDatas));
-        mav.addObject("matchNums",getJSonFormatStringlist(matchNums));
+        mav.addObject("pMainDatas", JsonUtils.toJson(wolfDatas));
+        mav.addObject("matchNums",JsonUtils.toJson(matchNums));
         return mav;
     }
     @RequestMapping(value = "queryPlayerId", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String queryPlayerId(HttpServletRequest request) {
     	logger.info(cMethod.getIpAddr(request) + "-queryPlayerId begin" );
-    	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo();
+    	String jsonData = request.getParameter("playerId");
+    	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo(jsonData);
     	return JsonConvertor.toJson(players);    	   	
     }
     @RequestMapping(value = "updataMemInfo", method = RequestMethod.GET)
@@ -237,26 +234,5 @@ public class WolfKillController {
     		logger.error("updatePospalPoint error" + e);
     	}
     	return message;
-    }
-    private String getJSonFormatStringlist(List<String> list) {
-        if (list == null || list.isEmpty()) {
-            return "[]";
-        }
-        StringBuffer sb = new StringBuffer();
-        sb.append(LEFT_BRACKET);
-        for (int i = 0; i < list.size(); i++) {
-            sb.append(LABEL_ITEM);
-            sb.append(list.get(i));
-            sb.append(VAL_ITEM);
-            sb.append(list.get(i));
-            sb.append(RIGHT_QUOTE);
-            if (i == list.size() - 1) {
-                sb.append("}");
-            } else {
-                sb.append("},");
-            }
-        }
-        sb.append(RIGHT_BRACKET);
-        return sb.toString();
-    }   
+    }      
 }
