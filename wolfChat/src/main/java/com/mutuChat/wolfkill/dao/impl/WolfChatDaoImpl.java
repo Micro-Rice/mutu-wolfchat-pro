@@ -9,6 +9,7 @@ import com.mutuChat.wolfkill.core.QueryConditions;
 import com.mutuChat.wolfkill.dao.IWolfChatDao;
 import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
+import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
 @Repository("wolfChatDao")
 public class WolfChatDaoImpl extends BaseDao implements IWolfChatDao{
 
@@ -36,4 +37,10 @@ public class WolfChatDaoImpl extends BaseDao implements IWolfChatDao{
 	        }
 	        return l.get(0);
 	}
+	
+	 @Override
+	    public List<WolfKillPregameInfo> findPregameInfo(QueryConditions condition) {
+	        String hql = "from WolfKillPregameInfo";       
+	        return super.find(hql, condition);
+	    }
 }

@@ -159,11 +159,18 @@ public class WolfKillController {
     	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo();
     	return JsonConvertor.toJson(players);    	   	
     }
-    @RequestMapping(value = "updataMemInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "updataMemInfo", method = RequestMethod.POST)
     @ResponseBody
     public String updataMemInfo(HttpServletRequest request) {
     	logger.info(cMethod.getIpAddr(request) + "-updataMemInfo begin" );
-    	String pdata = request.getParameter("pdata");
+    	String pdata = null;
+    	try {
+			pdata = cMethod.convertStreamToString(request.getInputStream());
+		} catch (IOException e) {
+			String message = "error||pdata is null";
+			logger.error("updataMemInfo is error"+ message); 
+			return message;
+		}
     	logger.info("the data from local is:" +pdata);
     	String message = "error||pdata is null";
         if (pdata != null && !pdata.isEmpty()) {

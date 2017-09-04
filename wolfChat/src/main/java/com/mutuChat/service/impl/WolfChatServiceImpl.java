@@ -1,5 +1,7 @@
 package com.mutuChat.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -11,6 +13,7 @@ import com.mutuChat.wolfkill.core.QueryConditions;
 import com.mutuChat.wolfkill.dao.IWolfChatDao;
 import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
+import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
 import com.mutuChat.wolfkill.vo.ChatUserInfoVo;
 @Transactional
 @Service("wolfChatService")
@@ -60,4 +63,16 @@ public class WolfChatServiceImpl implements IWolfChatService{
 	public void savePlayerInfo(WolfKillChatUserInfo playerInfo) {
 		wolfChatDao.saveChatUserInfo(playerInfo);		
 	}
+
+	@Override
+    public WolfKillPregameInfo getPregameInfoByOpenId(String openId) {
+        WolfKillPregameInfo preInfo = null;
+        QueryConditions condition = new QueryConditions();
+        condition.setConditionEqual("openId", openId);
+        List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
+        if (!preInfos.isEmpty()) {
+            preInfo = preInfos.get(0);            
+        }
+        return preInfo;
+    }
 }

@@ -1,6 +1,8 @@
 package com.mutuChat.wolfkill.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -8,10 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 public class ComMethod {
+	
+	private static Logger logger = Logger.getLogger(ComMethod.class);
+	
 	public String getIpAddr(HttpServletRequest request) {      
         String ip = request.getHeader("x-forwarded-for");      
        if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {      
@@ -83,4 +91,64 @@ public class ComMethod {
         }
         return result;
     }
+    
+    /** 
+     * getProperties:读取配置文件 <br/>
+     * 
+     * @param filename
+     *            配置文件名
+     * @return 配置 <br/>
+     */
+    public Properties getProperties(String filename) {
+        Properties props = new Properties();
+        InputStream in = getClass().getResourceAsStream(filename);
+        try {
+            props.load(in);
+        } catch (IOException e) {
+            props = new Properties();
+        } finally {
+            if(in != null){
+                SafeClose2(in);
+            }
+        }
+
+        return props;
+    }
+
+    /**
+     * 
+     * SafeClose2:安全关闭流 <br/>
+     * 
+     * @param is
+     *            流 <br/>
+     */
+    public static void SafeClose2(InputStream is) {
+        if (is != null) {
+            try {
+                is.close();
+            } catch (IOException e) {
+                logger.error("InputStream close Error."+e);
+            }
+        }
+    }
+    
+    public String convertStreamToString(InputStream is) {   
+    	   BufferedReader reader = new BufferedReader(new InputStreamReader(is));   
+    	        StringBuilder sb = new StringBuilder();   
+    	        String line = null;   
+    	        try {   
+    	            while ((line = reader.readLine()) != null) {   
+    	                sb.append(line);   
+    	            }   
+    	        } catch (IOException e) {   
+    	            e.printStackTrace();   
+    	        } finally {   
+    	            try {   
+    	                is.close();   
+    	            } catch (IOException e) {   
+    	                e.printStackTrace();   
+    	            }   
+    	        }   
+    	        return sb.toString();   
+    	   }   
 }
