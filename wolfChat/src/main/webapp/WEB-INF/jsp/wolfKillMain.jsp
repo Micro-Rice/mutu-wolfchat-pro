@@ -116,25 +116,25 @@ function findMax(dataObj,mode) {
 	var length = dataObj.length;
 	var max;
 	if (mode == "achiveNum") {
-		max = dataObj[0].val.split("-")[1];
+		max = dataObj[0].split("-")[1];
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].val.split("-")[1];
+			var tg = dataObj[i].split("-")[1];
 			if (+max < +tg) {
 				max = tg;
 			}
 		}
 	} else if (mode == "mvp") {
-		max = dataObj[0].val.split("-")[3];
+		max = dataObj[0].split("-")[3];
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].val.split("-")[3];
+			var tg = dataObj[i].split("-")[3];
 			if (+max < +tg) {
 				max = tg;
 			}
 		}
 	} else if (mode == "levelnum") {
-		max = dataObj[0].val.split("-")[6];
+		max = dataObj[0].split("-")[6];
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].val.split("-")[6];
+			var tg = dataObj[i].split("-")[6];
 			if (+max < +tg) {
 				max = tg;
 			}
@@ -148,7 +148,7 @@ function createInfoTable(dataObj) {
 	var maxMvp = findMax(dataObj,"mvp");
 	var maxLevel = findMax(dataObj,"levelnum");
 	for (var i = 0; i < length; i++) {
-		var killdata = dataObj[i].val.split("-");
+		var killdata = dataObj[i].split("-");
 		var $tr = $('<tr id=Ftr_'+i+' class="infoTr"></tr>');
 		
 		var temp = '<td id=squence_'+i+'>'+killdata[7]+'</td>';
@@ -207,7 +207,7 @@ function createFailerInfo() {
 	$("#maincontainer").append("<div class='stitle'>读取数据错误，请刷新！</div>");
 }
 function validAndOrder() {
-	var text = $("#player").val();
+	var text = $("#player")();
 	if (/^[a-zA-Z0-9_\u4e00-\u9fa5]+$/g.test(text)) {
 		return true;
 	} else {

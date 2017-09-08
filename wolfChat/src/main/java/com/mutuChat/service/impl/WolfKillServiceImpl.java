@@ -33,8 +33,11 @@ import com.mutuChat.wolfkill.model.WolfKillMainInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPerInfo;
 import com.mutuChat.wolfkill.model.WolfKillPerInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
+import com.mutuChat.wolfkill.utils.JsonUtils;
 import com.mutuChat.wolfkill.utils.StringUtils;
+import com.mutuChat.wolfkill.vo.ChatPlayerInfoVo;
 import com.mutuChat.wolfkill.vo.CusInfoVo;
+import com.mutuChat.wolfkill.vo.PdataVo;
 import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 import com.pospal.vo.ImageResponseDataDetail;
 import com.pospal.vo.MemInfoVo;
@@ -58,7 +61,6 @@ import com.pospal.vo.PostPointParameter;
 public class WolfKillServiceImpl implements IWolfKillServive{
     
     private final static String LINE = "-";
-    private final static String UNDERLINE = "_";
     private final static String UNIQUE_ID="uniqueId";
     private final static String MATCH_NUM = "matchNum";
     private final static String ROLE_NAME="roleName";
@@ -103,8 +105,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     @Resource
     private IWolfChatDao wolfChatDao;
     
-    public List<String> getWolfKillMainData(int showSize,String matchNum) {        
-        List<String> resultDatas = new ArrayList<String>();        
+    public List<ChatPlayerInfoVo> getWolfKillMainData(int showSize,String matchNum) {        
+        List<ChatPlayerInfoVo> resultDatas = new ArrayList<ChatPlayerInfoVo>();        
         QueryConditions condition = new QueryConditions(); 
         String orderBy = "levelNum desc";
         condition.setOrderBy(orderBy);
@@ -125,7 +127,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
                 length = mainDatas.size();
             }
             for (int i = 0; i < length; i++) {
-                String resultData = parsePlayerData(mainDatas.get(i),i+1);
+            	ChatPlayerInfoVo resultData = parsePlayerData(mainDatas.get(i),i+1);
                 resultDatas.add(resultData);
             }
         }        
@@ -197,7 +199,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	public String updataUserInfo(String userInfo) {
-		String[] userObj = userInfo.split(UNDERLINE);
+		List<PdataVo> pdatas = JsonUtils.jsonToArrayList(userInfo, PdataVo.class);
 		 List<WolfKillMainInfo> mainInfos = new ArrayList<WolfKillMainInfo>();
 		 List<WolfKillPerInfo> perInfos = new ArrayList<WolfKillPerInfo>();
 		 Map<String,Integer> levelMap = new HashMap<String,Integer>();
@@ -206,11 +208,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		 levelMap.put(HJZL, 3);
 		 levelMap.put(BJZL, 4);
 		 levelMap.put(ZSZL, 5);
-		for (int i = 0; i < userObj.length; i++) {
-			CusInfoVo info = parseUserInfo(userObj[i]);
-			if (info == null) {
-				return "error||updataUserInfo failer, userdata is illegal format";
-			}
+		for (int i = 0; i < pdatas.size(); i++) {
+			CusInfoVo info = parseUserInfo(pdatas.get(i));
 			QueryConditions condition = new QueryConditions();
 	        condition.setConditionEqual(UNIQUE_ID, info.getUid());
 	        List<WolfKillMainInfo> perMainDatas = wolfKillDao.queryMainDataByCondition(condition);
@@ -375,12 +374,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
         }
         return perDatas;
     }
-	private CusInfoVo parseUserInfo(String userInfo) {
+	private CusInfoVo parseUserInfo(PdataVo userInfo) {
 		CusInfoVo info = new CusInfoVo();
-		if (userInfo.indexOf(LINE) < 0 || userInfo.split(LINE).length != 6) {
-			logger.error("updataUserInfo is error: userData is illegal format");
-			return null;
-		}
 		/**
 		 * hardCode,以后改成JSON;
 		 * 0-name
@@ -390,16 +385,16 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		 * 4-mvp
 		 * 5-roleachive
 		 */
-		info.setName(userInfo.split(LINE)[0]);
-		info.setUid(userInfo.split(LINE)[1]);		
+		info.setName(userInfo.getPlayerName());
+		info.setUid(String.valueOf(userInfo.getPlayerId()));		
 		/**
 		 * 角色对应关系
 		 */
-		String roleName = parseRoleName(userInfo.split(LINE)[2]);
+		String roleName = parseRoleName(String.valueOf(userInfo.getRoleIndex()));
 		info.setRolename(roleName);
-		String mvpSign = userInfo.split(LINE)[4];
+		String mvpSign = String.valueOf(userInfo.getMvp());
 		String cupidSign = ZERO;
-		String roleachive = userInfo.split(LINE)[5];
+		String roleachive = String.valueOf(userInfo.getAchiveIndex());
 		/**
 		 * 成就积分计算,并判断是否达成成就
 		 */
@@ -410,7 +405,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		int achiveNum = info.getAchiveFre();
 		//int achiveNum = computeAchiveNum(info.getAchiveFre());
 		info.setAchiveNum(achiveNum);
-		String winSign = userInfo.split(LINE)[3];
+		String winSign = String.valueOf(userInfo.getWinSign());
 		if (ZERO.equals(mvpSign)) {
 			info.setMvp(0);
 		} else {
@@ -560,7 +555,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	        }
 	   return r;
 	}
-    private String parsePlayerData(WolfKillMainInfo playerData,int order) {
+    private ChatPlayerInfoVo parsePlayerData(WolfKillMainInfo playerData,int order) {
         int tg = playerData.getPeoNum() + playerData.getWolfNum() + playerData.getOtherNum();
         int pw = playerData.getPeoWon();
         int ww = playerData.getWolfWon();
@@ -584,18 +579,17 @@ public class WolfKillServiceImpl implements IWolfKillServive{
        
         BigDecimal totRate = computeRate((pw + ww + ow), tg);
         
-        StringBuffer tempBuffer = new StringBuffer();
-        tempBuffer.append(name).append(LINE)
-        .append(achiveNum).append(LINE)
-        .append(totRate).append(LINE)
-        .append(mvp).append(LINE)
-        .append(uniqueId).append(LINE)
-        .append(level).append(LINE)
-        .append(levelNum).append(LINE)
-        .append(order).append(LINE)
-        .append(urlImg);
-       
-        return tempBuffer.toString();
+        ChatPlayerInfoVo player = new ChatPlayerInfoVo();
+        player.setpName(name);
+        player.setpAchiveNum(achiveNum);
+        player.setpWrate(totRate);
+        player.setPlayerId(uniqueId);
+        player.setMvp(mvp);
+        player.setpLevel(level);
+        player.setpLevelNum(levelNum);
+        player.setpOrder(order);
+        player.setpTag(urlImg);      
+        return player;
     }
     
     private String parseMainInfo(WolfKillMainInfo playerData) {
@@ -822,42 +816,45 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	@Override
-	public List<PlayerInfoVo> getPlayerBaseInfo() {
+	public List<PlayerInfoVo> getPlayerBaseInfo(String jsonDate) {
 		List<PlayerInfoVo> playerInfos = new ArrayList<PlayerInfoVo>();
-		QueryConditions condition = new QueryConditions();
-		List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
-		List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
-		for (int i = 0; i < pospalDatas.size(); i++) {
-			WolfKillPospalInfo pospal = pospalDatas.get(i);
-			PlayerInfoVo playerInfo = new PlayerInfoVo();
-			String uniqueId = pospal.getNumber();
-			int point = 0;
-			int pointMax = 0;
-			String telephone = pospal.getPhone();
-			String name = pospal.getName();
-			if (uniqueId != null && StringUtils.checkIsNum(uniqueId)) {
-				for (int j = 0; j < mainDatas.size(); j++) {
-					WolfKillMainInfo mainData = mainDatas.get(j);
-					if (uniqueId.equals(mainData.getUniqueId())) {
+		if (jsonDate != null) {
+			List<Integer> playerIds = JsonUtils.jsonToArrayList(jsonDate, Integer.class);
+			for (int i = 0; i < playerIds.size(); i++) {
+				int playerId = playerIds.get(i);
+				QueryConditions condition = new QueryConditions();
+				condition.setConditionEqual("number", String.valueOf(playerId));
+				List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
+				QueryConditions condition1 = new QueryConditions();
+				condition1.setConditionEqual("uniqueId", playerId);
+				List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition1);
+				if (!pospalDatas.isEmpty()) {
+					WolfKillPospalInfo pospal = pospalDatas.get(0);
+					PlayerInfoVo playerInfo = new PlayerInfoVo();
+					int point = 0;
+					int pointMax = 0;
+					String telephone = pospal.getPhone();
+					String name = pospal.getName();
+					if (!mainDatas.isEmpty()) {
+						WolfKillMainInfo mainData = mainDatas.get(0);
 						if (mainData.getLevelNum() != null) {
 							point = mainData.getLevelNum();
 						}
 						if (mainData.getLevelMaxNum() != null) {
 							pointMax = mainData.getLevelMaxNum();
 						}
-						break;
-					}					
-				}
-				playerInfo.setNum(Long.parseLong(uniqueId));
+					}
+					playerInfo.setNum((long)playerId);
+					playerInfo.setName(name);
+					playerInfo.setPoint(point);
+					playerInfo.setPointMax(pointMax);
+					if (telephone != null && StringUtils.checkIsNum(telephone)) {
+						playerInfo.setTelephone(Long.parseLong(telephone));
+					}
+					playerInfos.add(playerInfo);
+				}	
 			}
-			playerInfo.setName(name);
-			playerInfo.setPoint(point);
-			playerInfo.setPointMax(pointMax);
-			if (telephone != null && StringUtils.checkIsNum(telephone)) {
-				playerInfo.setTelephone(Long.parseLong(telephone));
-			}		
-			playerInfos.add(playerInfo);
-		}
+		}	
 		return playerInfos;
 	}
 	
