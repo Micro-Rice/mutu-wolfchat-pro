@@ -39,11 +39,11 @@ public interface IWolfKillServive {
     /*
      * 查询个人详细信息
      */
-    public List<String> getWolfKillPerData(String playerName,String matchNum);
+    public ChatPlayerInfoVo getWolfKillPerData(String playerUid,String matchNum);
     /*
      * 查询个人概况信息
      */
-    public String getPlayerMainDataByUid(String playerUid,String matchNum);
+    public ChatPlayerInfoVo getPlayerMainDataByUid(String playerUid,String matchNum);
     /**
      * 查询玩家基本信息
      */

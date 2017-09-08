@@ -98,25 +98,25 @@ function findMax(dataObj,mode) {
 	var length = dataObj.length;
 	var max;
 	if (mode == "achiveNum") {
-		max = dataObj[0].split("-")[1];
+		max = dataObj[0].pAchiveNum;
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].split("-")[1];
+			var tg = dataObj[i].pAchiveNum;
 			if (+max < +tg) {
 				max = tg;
 			}
 		}
 	} else if (mode == "mvp") {
-		max = dataObj[0].split("-")[3];
+		max = dataObj[0].mvp;
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].split("-")[3];
+			var tg = dataObj[i].mvp;
 			if (+max < +tg) {
 				max = tg;
 			}
 		}
-	} else if (mode = "levelnum") {
-		max = dataObj[0].split("-")[6];
+	} else if (mode == "levelnum") {
+		max = dataObj[0].pLevelNum;
 		for (var i = 1; i < length; i++) {
-			var tg = dataObj[i].split("-")[6];
+			var tg = dataObj[i].pLevelNum;
 			if (+max < +tg) {
 				max = tg;
 			}
@@ -130,7 +130,7 @@ function createInfoTable(dataObj,matchNums,maxMatchNum) {
 	var maxMvp = findMax(dataObj,"mvp");
 	var maxLevel = findMax(dataObj,"levelnum");
 	for (var i = 0; i < length; i++) {
-		var killdata = dataObj[i].split("-");
+		var killdata = dataObj[i];
 		
 		var $tr = $('<tr id=Ftr_'+i+' class="infoTr"></tr>'); 
 		var temp;
@@ -142,51 +142,52 @@ function createInfoTable(dataObj,matchNums,maxMatchNum) {
 		$td = $(temp);
 		$td.appendTo($tr);
 		
-		temp = '<td id=squence_'+i+'>'+killdata[7]+'</td>';
+		temp = '<td id=squence_'+i+'>'+killdata.pOrder+'</td>';
 		$td = $(temp);
 		$td.appendTo($tr);
 		
 		var pathImage;
-		if (killdata[8] != "null") {
-			pathImage = killdata[8];
+		if (!!killdata.pTag) {
+			pathImage = killdata.pTag;
 		} else {
 			pathImage = "<%=basePath%>images/mutu.jpg";
 		}
 		
 		var temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;" src="'+pathImage+'">'
-		+''+killdata[0]+'</a></td>';
+		+''+killdata.pName+'</a></td>';
 		$td = $(temp);
 		$td.appendTo($tr);
 				
-		temp = '<td><div style="font-weight:bold">'+killdata[5]+'</div></td>';
+		temp = '<td><div style="font-weight:bold">'+killdata.pLevel+'</div></td>';
 		$td = $(temp);
 		$td.appendTo($tr);
 		
-		var percent = ((killdata[6]/maxLevel)*100).toFixed(2);
-		temp = '<td><div>'+killdata[6]+'</div><div class="segment segment-gold" style="width:'+percent+'%;"></div></td>';
+		var percent = ((killdata.pLevelNum/maxLevel)*100).toFixed(2);
+		temp = '<td><div>'+killdata.pLevelNum+'</div><div class="segment segment-gold" style="width:'+percent+'%;"></div></td>';
+		$td = $(temp);
+		$td.appendTo($tr);
+						
+		var wrate = (killdata.pWrate*100).toFixed(2);
+		temp = '<td><div>'+wrate+'%</div><div class="segment segment-green" style="width:'+wrate+'%;"></div></td>';
 		$td = $(temp);
 		$td.appendTo($tr);
 		
-		killdata[2] = (killdata[2]*100).toFixed(2);
-		temp = '<td><div>'+killdata[2]+'%</div><div class="segment segment-green" style="width:'+killdata[2]+'%;"></div></td>';
-		$td = $(temp);
-		$td.appendTo($tr);
-		
-		percent = ((killdata[3]/maxMvp)*100).toFixed(2);
-		temp = '<td><div>'+killdata[3]+'</div><div class="segment segment-red" style="width:'+percent+'%;"></div></td>';
+		percent = ((killdata.mvp/maxMvp)*100).toFixed(2);
+		temp = '<td><div>'+killdata.mvp+'</div><div class="segment segment-red" style="width:'+percent+'%;"></div></td>';
 		$td = $(temp);
 		$td.appendTo($tr);
 		
 		temp = '<td></td>';
 		$td = $(temp);
-		var str = '<img class="xing-img" src="<%=basePath%>images/xingxing.png"> x ' + killdata[1];
+		var str = '<img class="xing-img" src="<%=basePath%>images/xingxing.png"> x ' + killdata.pAchiveNum;
 		$td.append(str);	
 		/* percent = ((killdata[1]/maxAchive)*100).toFixed(2);
 		temp = '<td><div>'+killdata[1]+'</div><div class="segment segment-white" style="width:'+percent+'%;"></div></td>';
 		$td = $(temp); */
-		$td.appendTo($tr);	
+		$td.appendTo($tr);
+			
 		
-		temp = '<td style="display:none" id="uid_'+i+'">'+killdata[4]+'</td>';
+		temp = '<td style="display:none" id="uid_'+i+'">'+killdata.playerId+'</td>';
 		$td = $(temp);
 		$td.appendTo($tr);	
 		

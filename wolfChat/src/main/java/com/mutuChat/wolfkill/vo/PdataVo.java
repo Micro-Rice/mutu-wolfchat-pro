@@ -1,46 +1,54 @@
 package com.mutuChat.wolfkill.vo;
 
 public class PdataVo {
-	private String playerName;
-	private int playerId;
-	private int roleIndex;
-	private int winSign;
-	private int Mvp;
-	private int achiveIndex;
-	public String getPlayerName() {
-		return playerName;
+	private String name;
+	private int id;
+	private int role;
+	private int result;
+	private int mvp;
+	private int achieve;
+	private int camp;
+	public String getName() {
+		return name;
 	}
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public int getPlayerId() {
-		return playerId;
+	public int getId() {
+		return id;
 	}
-	public void setPlayerId(int playerId) {
-		this.playerId = playerId;
+	public void setId(int id) {
+		this.id = id;
 	}
-	public int getRoleIndex() {
-		return roleIndex;
+	public int getRole() {
+		return role;
 	}
-	public void setRoleIndex(int roleIndex) {
-		this.roleIndex = roleIndex;
+	public void setRole(int role) {
+		this.role = role;
 	}
-	public int getWinSign() {
-		return winSign;
+	public int getResult() {
+		return result;
 	}
-	public void setWinSign(int winSign) {
-		this.winSign = winSign;
+	public void setResult(int result) {
+		this.result = result;
 	}
 	public int getMvp() {
-		return Mvp;
+		return mvp;
 	}
 	public void setMvp(int mvp) {
-		Mvp = mvp;
+		this.mvp = mvp;
 	}
-	public int getAchiveIndex() {
-		return achiveIndex;
+	public int getAchieve() {
+		return achieve;
 	}
-	public void setAchiveIndex(int achiveIndex) {
-		this.achiveIndex = achiveIndex;
+	public void setAchieve(int achieve) {
+		this.achieve = achieve;
 	}
+	public int getCamp() {
+		return camp;
+	}
+	public void setCamp(int camp) {
+		this.camp = camp;
+	}
+	
 }

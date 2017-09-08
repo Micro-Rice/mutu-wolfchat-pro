@@ -60,16 +60,16 @@
 $(function (){
 	var matchNum = "${matchNum}";
 	var maxMatchNum = "${maxMatchNum}";
-	var playerData = '${perDatas}';
+	var playerData = '${perData}';
 	var seq = "${sequence}";
 	var uid = "${uniqueId}";
 	playerData = eval("("+playerData+")");
-	if (playerData.length != 0) {
-		var mainData = playerData[0];
-		creatTablePer(mainData);
+	if (!!playerData) {
+		creatTablePer(playerData);
 		$("#sequence").text(seq);
-		if (playerData.length > 1) {
-			creatTableInfo(playerData);
+		var roleData = playerData.roleInfos
+		if (roleData.length > 1) {
+			creatTableInfo(roleData);
 		}		
 	} else {
 		createFailerInfo();
@@ -96,11 +96,11 @@ $(function (){
 		});		
 	});
 });
-function findMax(playerData) {
-	var length = playerData.length;
-	var max = playerData[1].split("-")[1];
+function findMax(roleData) {
+	var length = roleData.length;
+	var max = roleData[0].rMatchNum;
 	for (var i = 1; i < length; i++) {
-		var tg = playerData[i].split("-")[1];
+		var tg = roleData[i].rMatchNum;
 		if (+max < +tg) {
 			max = tg;
 		}
@@ -117,26 +117,26 @@ function createFailerInfo() {
 	$("#maincontainer").append("<div class='stitle'>没有该玩家的详细数据！</div>");
 }
 function creatTablePer(mainData) {	
-	var name = mainData.split("-")[0];
+	var name = mainData.pName;
 	$("#nameSpan").text(name);
-	var level = mainData.split("-")[11];
+	var level = mainData.pLevel;
 	$("#leveltext").text(level);
-	var tg = mainData.split("-")[1];
+	var tg = mainData.pMatchNum;
 	$("#sumNum").text(tg);
-	var tr = mainData.split("-")[2];
+	var tr = mainData.pWrate;
 	tr = (tr*100).toFixed(2)+"%";
 	$("#winRatio").text(tr);
-	var mvpNum = mainData.split("-")[9];
+	var mvpNum = mainData.mvp;
 	$("#mvpNum").text(mvpNum);
-	var levelNum = mainData.split("-")[12];
+	var levelNum = mainData.pLevelNum;
 	$("#levelNum").text(levelNum);
-	var maxLevelNum = mainData.split("-")[13];
+	var maxLevelNum = mainData.pLevelMnum;
 	$("#maxLevelNum").text(maxLevelNum);
-	var achiveNum = mainData.split("-")[14];
+	var achiveNum = mainData.pAchiveNum;
 	$("#achiveNum").text(achiveNum);
-	var urlImg =  mainData.split("-")[15];
+	var urlImg =  mainData.pTag;
 	var pathImg;
-	if (urlImg != "null") {
+	if (!!urlImg) {
 		pathImg = urlImg;
 	} else {
 		pathImg = "<%=basePath%>images/mutu.jpg";
@@ -144,12 +144,12 @@ function creatTablePer(mainData) {
 	var $img = '<img style="width:90px;height:90px" src="'+pathImg+'"/>'
 	$("#circleImg").append($img);
 	
-	var pg = mainData.split("-")[3];
-	var pr = mainData.split("-")[4];
-	var wg = mainData.split("-")[5];
-	var wr = mainData.split("-")[6];
-	var og = mainData.split("-")[7];
-	var or = mainData.split("-")[8];	
+	var pg = mainData.pPeoNum;
+	var pr = mainData.pPeoRate;
+	var wg = mainData.pWolNum;
+	var wr = mainData.pWolRate;
+	var og = mainData.pOthNum;
+	var or = mainData.pOthRate;	
 	var max = pg;
 	if (+max < +wg) {
 		max = wg;
@@ -188,16 +188,16 @@ function creatTablePer(mainData) {
 		$("#sideTable tbody").append($tr);
 	}	
 }
-function creatTableInfo(playerData) {
-	var length = playerData.length;
-	var maxTotal = findMax(playerData);
+function creatTableInfo(roleData) {
+	var length = roleData.length;
+	var maxTotal = findMax(roleData);
 	for (var i = 1; i < length; i++) {
-		var roleName = playerData[i].split("-")[0];
+		var roleName = roleData[i].rName;
 		var displayName = getDisName(roleName);
 		var cgName = getCgName(roleName);
-		var total = playerData[i].split("-")[1];
-		var rate = playerData[i].split("-")[2];
-		var achiveFre = playerData[i].split("-")[3];
+		var total = roleData[i].rMatchNum;
+		var rate = roleData[i].rWrate;
+		var achiveFre = roleData[i].rAchiveFre;
 		var $tr = $('<tr id=Ftr_'+i+' class="perTr"></tr>'); 
 		var temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="hero-img-list"src="<%=basePath%>images/'+roleName+'.jpg">'
 		+''+displayName+'</a></td>';
@@ -305,6 +305,12 @@ function getDisName(name) {
 		disName = "圣光骑士";
 	} else if (name == "devil") {
 		disName = "恶魔";
+	} else if (name == "wolfboy") {
+		disName = "野孩子"
+	} else if (name == "thife") {
+		disName = "盗贼"
+	} else if (name == "bear") {
+		disName = "熊"
 	}
 	return disName;
 }

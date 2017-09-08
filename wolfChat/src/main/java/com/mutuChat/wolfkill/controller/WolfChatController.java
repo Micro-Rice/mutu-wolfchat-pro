@@ -79,34 +79,36 @@ public class WolfChatController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "selectSeat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
+	/*@RequestMapping(value = "selectSeat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     public ModelAndView selectSeat(HttpServletRequest request) {
 	    logger.info("##selectSeat begin##");
 	    String backmsg = null;
         String openid = null;
-        String strJsonUser = null;        
+        String strJsonUser = null; 
+        String jsonPreInfo = null;
         HttpSession session=request.getSession();
         String userCode = request.getParameter("code");
+        String shopName = request.getParameter("shopName");
         WolfKillChatUserInfo chatUser = wolfChatBusiService.getAndSaveChatPlayerInfo(userCode, session, backmsg);
         if (chatUser != null) {
             openid = chatUser.getOpenId();
             strJsonUser = JsonUtils.toJson(chatUser);
         }
-        String jsonPreInfo = null;
+        List<String> rooms = initRoomLayout("/RoomName.properties",shopName);
         if (openid != null && !openid.isEmpty()) {
             WolfKillPregameInfo preInfo = wolfChatService.getPregameInfoByOpenId(openid);
             jsonPreInfo = JsonUtils.toJson(preInfo);
         }
-        List<String> rooms = initRoomLayout("/roomName.properties");
         ModelAndView mav = new ModelAndView("selectSeat");
         mav.addObject("rMsg",backmsg);
-        mav.addObject("openid",openid);
-        mav.addObject("userInfo",strJsonUser);
+        mav.addObject("userInfo",strJsonUser); 
         mav.addObject("rooms", JsonUtils.toJson(rooms));
         mav.addObject("preInfo",jsonPreInfo);
         return mav;
     }
-	private List<String> initRoomLayout(String file){
+
+	
+	private List<String> initRoomLayout(String file,String shopName){
 	    ComMethod comMethod = new ComMethod();
 	    Properties props = comMethod.getProperties(file);
         List<String> keys = Arrays.asList(props.stringPropertyNames().toArray(
@@ -115,9 +117,11 @@ public class WolfChatController {
         List<String> rooms = new ArrayList<String>();
         for (int i = 0; i < keys.size(); i++){
             String key = (String) keys.get(i);
-            String val = props.getProperty(key);
-            rooms.add(val);
+            if (key != null && key.equals(shopName)) {
+                String val = props.getProperty(key);
+                rooms.add(val);
+            }            
         }
         return rooms;
-    }
+    }*/
 }

@@ -37,6 +37,7 @@ import com.mutuChat.service.IPospalService;
 import com.mutuChat.service.IWolfKillServive;
 import com.mutuChat.wolfkill.utils.ComMethod;
 import com.mutuChat.wolfkill.utils.JsonUtils;
+import com.mutuChat.wolfkill.vo.ChatPlayerInfoVo;
 import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 
 
@@ -71,7 +72,7 @@ public class WolfKillController {
     public Map<String, Object> getWolfkillData(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<String, Object>();
         String matchNum = request.getParameter("matchNum");
-        List<String> wolfDatas = wolfKillService.getWolfKillMainData(SHOWSIZE,matchNum);
+        List<ChatPlayerInfoVo> wolfDatas = wolfKillService.getWolfKillMainData(SHOWSIZE,matchNum);
         map.put("playerInfo", JsonUtils.toJson(wolfDatas));
         logger.info(cMethod.getIpAddr(request) + "-login success" );
         return map;
@@ -80,7 +81,7 @@ public class WolfKillController {
     @RequestMapping(value = "getWolfkill", method = RequestMethod.GET)
     public ModelAndView getWolfkillAllData(HttpServletRequest request) {
     	ModelAndView mav = new ModelAndView("playerInfo");
-        List<String> wolfDatas = wolfKillService.getWolfKillMainData(Integer.MAX_VALUE,"0");
+        List<ChatPlayerInfoVo> wolfDatas = wolfKillService.getWolfKillMainData(Integer.MAX_VALUE,"0");
         mav.addObject("pInfo", JsonUtils.toJson(wolfDatas));
         logger.info(cMethod.getIpAddr(request) + "-login success:getWolfkill" );
         return mav;
@@ -91,7 +92,7 @@ public class WolfKillController {
         String userEncode = request.getParameter("playerName");
         String seqEncode = request.getParameter("seq");
         String matchNumEncode = request.getParameter("mnum");
-        List<String> wolfPerDatas = new ArrayList<String>();
+        ChatPlayerInfoVo wolfPerData = null;
         String sequence = "";
         String user = "";
         String matchNum = "";
@@ -104,13 +105,13 @@ public class WolfKillController {
 				user = new String(byteData, "utf-8");
 				sequence =  new String(seqData,"utf-8");
 				matchNum =  new String(matchData,"utf-8");
-				wolfPerDatas = wolfKillService.getWolfKillPerData(user,matchNum); 
+				wolfPerData = wolfKillService.getWolfKillPerData(user,matchNum); 
 			} catch (UnsupportedEncodingException e) {
 				logger.error("DecodeBase64 is" +e);
 			}       	       	
         }        
         ModelAndView mav = new ModelAndView("wolfKillPer");
-        mav.addObject("perDatas", JsonUtils.toJson(wolfPerDatas));
+        mav.addObject("perData", JsonUtils.toJson(wolfPerData));
         mav.addObject("sequence",sequence);
         mav.addObject("uniqueId",user);
         mav.addObject("matchNum",matchNum);
@@ -122,13 +123,13 @@ public class WolfKillController {
     public ModelAndView searchPlayer(HttpServletRequest request) {
         String playerUid = request.getParameter("player");
         ModelAndView mav = new ModelAndView("searchPlayer");
-        List<String> wolfDatas = new ArrayList<String>();
+        List<ChatPlayerInfoVo> wolfDatas = new ArrayList<ChatPlayerInfoVo>();
         List<String> matchNums = wolfKillService.getMatchNums(playerUid);
         if (!playerUid.isEmpty() && playerUid != null) {
         	/**
         	 * 当季数据
         	 */
-        	String data = wolfKillService.getPlayerMainDataByUid(playerUid, "0");
+        	ChatPlayerInfoVo data = wolfKillService.getPlayerMainDataByUid(playerUid, "0");
         	if (data != null) {
     			wolfDatas.add(data);
     		}
@@ -136,7 +137,7 @@ public class WolfKillController {
         	 * 历史数据
         	 */
         	for (int i = 0; i < matchNums.size(); i++) {
-        		String hisdata = wolfKillService.getPlayerMainDataByUid(playerUid, matchNums.get(i));
+        		ChatPlayerInfoVo hisdata = wolfKillService.getPlayerMainDataByUid(playerUid, matchNums.get(i));
         		if (hisdata != null) {
         			wolfDatas.add(hisdata);
         		}
@@ -156,7 +157,7 @@ public class WolfKillController {
     	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo(jsonData);
     	return JsonConvertor.toJson(players);    	   	
     }
-    @RequestMapping(value = "updataMemInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "updataMemInfo", method = RequestMethod.POST,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String updataMemInfo(HttpServletRequest request) {
     	logger.info(cMethod.getIpAddr(request) + "-updataMemInfo begin" );
