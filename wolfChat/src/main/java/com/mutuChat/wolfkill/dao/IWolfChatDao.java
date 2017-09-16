@@ -13,4 +13,6 @@ public interface IWolfChatDao {
 	public WolfKillPospalInfo findPlayerInfo(QueryConditions condition);
 	
 	public List<WolfKillPregameInfo> findPregameInfo(QueryConditions condition);
+	
+	public void savePregameInfo(WolfKillPregameInfo preInfo);
 }

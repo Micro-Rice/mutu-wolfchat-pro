@@ -10,8 +10,8 @@
 <html lang="zh_cn">
 <style type="text/css">
 .circle-img {
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     overflow: hidden;
     border: 4px solid rgba(191, 191, 191, .24);
@@ -42,7 +42,7 @@ $(function (){
 		userInfo = eval("("+userInfo+")");
 	}	
 	var pathImage = "<%=basePath%>images/mutu.jpg";
-	var $img = '<img style="width:90px;" src="'+pathImage+'"/>';
+	var $img = '<img style="width:120px;height:120px" src="'+pathImage+'"/>';
 	$("#circleImg").append($img);
 	
 	$("#circleImg img").error(function(){
@@ -57,7 +57,7 @@ $(function (){
 		} else {
 			if (!!userInfo) {
 				pathImage = userInfo.openImg;
-				$img = '<img style="width:90px;" src="'+pathImage+'"/>';
+				$img = '<img style="width:120px;height:120px" src="'+pathImage+'"/>';
 				$("#circleImg").empty();
 				$("#circleImg").append($img);
 				if (!!userInfo.playerId && !!userInfo.playerPhone) {
@@ -114,7 +114,7 @@ $(function (){
 	$("#findusername").click(function(){
 		$.alert("请联系MUTU管理员,联系电话010-56123556!");
 	});
-	$("#userform").on("focus",".weui_input",function(){
+	$("#userform").on("focus",".weui-input",function(){
 		clearErrMsg($(this));
 	});
 	
@@ -168,39 +168,39 @@ $(function (){
 <title>Mutu狼人杀</title>
 </head>
 <body>
-	<div style="margin:0px auto 5px auto;" class="circle-img" id="circleImg"></div>
+	<div style="margin:40px auto 80px auto;" class="circle-img" id="circleImg"></div>
 	<form id="userform" action="doMemberInfo" method="post" id="loginform" name="loginform">
-		<div class="weui_cells weui_cells_form">
-			<div class="weui_cell">
-				<div class="weui_cell_hd">
-					<label class="weui_label">会员号：</label>
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell">
+				<div class="weui-cell_hd">
+					<label class="weui-label">会员号：</label>
 				</div>
-				<div class="weui_cell_bd weui_cell_primary">
-					<input id="username" name="username" tabindex="1" class="weui_input" type="text" placeholder="请输入会员号">
+				<div class="weui-cell_bd weui-cell_primary">
+					<input id="username" name="username" tabindex="1" class="weui-input" type="text" placeholder="请输入会员号">
 				</div>
-				<div class="weui_cell_ft">
-                     <i class="weui_icon_warn" id="usernameErr"></i>
-                     <i class="weui_icon_success" id="usernameSuc" style="display:none"></i>
+				<div class="weui-cell__ft">
+                     <i class="weui-icon-warn" id="usernameErr"></i>
+                     <i class="weui-icon-success" id="usernameSuc" style="display:none"></i>
                  </div>
 			</div>
-			<div class="weui_cell">
-				<div class="weui_cell_hd">
-					<label class="weui_label">手机号：</label>
+			<div class="weui-cell">
+				<div class="weui-cell_hd">
+					<label class="weui-label">手机号：</label>
 				</div>
-				<div class="weui_cell_bd weui_cell_primary">
-					<input id="phone" name="phone" tabindex="2" class="weui_input" type="text" placeholder="请输入手机号">
+				<div class="weui-cell_bd weui-cell_primary">
+					<input id="phone" name="phone" tabindex="2" class="weui-input" type="text" placeholder="请输入手机号">
 				</div>
-				<div class="weui_cell_ft">
-                     <i class="weui_icon_warn" id="phoneErr"></i>
-                     <i class="weui_icon_success" id="phoneSuc" style="display:none"></i>
+				<div class="weui-cell__ft">
+                     <i class="weui-icon-warn" id="phoneErr"></i>
+                     <i class="weui-icon-success" id="phoneSuc" style="display:none"></i>
                  </div>
 			</div>		   
 		</div>
-		<div id="errorMsg" class="weui_cells_tips" style="text-align:center;color:red;"></div>
+		<div id="errorMsg" class="weui-cells__tips" style="text-align:center;color:red;"></div>
 		<div style="padding:15px;">
-			<div class="weui_btn weui_btn_primary" id="loginBtn">绑定会员卡</div>		
+			<div class="weui-btn weui-btn_primary" id="loginBtn">绑定会员卡</div>		
 		</div>
-		<div id="findusername" class="weui_cells_tips" style="text-align:right;color:blue;cursor:pointer;">忘记会员号？</div>		
+		<div id="findusername" class="weui-cells__tips" style="text-align:right;color:blue;cursor:pointer;">忘记会员号？</div>		
 	</form>
 </body>
 </html>

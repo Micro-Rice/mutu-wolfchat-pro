@@ -68,7 +68,7 @@ $(function (){
 		creatTablePer(playerData);
 		$("#sequence").text(seq);
 		var roleData = playerData.roleInfos
-		if (roleData.length > 1) {
+		if (roleData.length > 0) {
 			creatTableInfo(roleData);
 		}		
 	} else {
@@ -191,7 +191,7 @@ function creatTablePer(mainData) {
 function creatTableInfo(roleData) {
 	var length = roleData.length;
 	var maxTotal = findMax(roleData);
-	for (var i = 1; i < length; i++) {
+	for (var i = 0; i < length; i++) {
 		var roleName = roleData[i].rName;
 		var displayName = getDisName(roleName);
 		var cgName = getCgName(roleName);
@@ -307,7 +307,7 @@ function getDisName(name) {
 		disName = "恶魔";
 	} else if (name == "wolfboy") {
 		disName = "野孩子"
-	} else if (name == "thife") {
+	} else if (name == "thief") {
 		disName = "盗贼"
 	} else if (name == "bear") {
 		disName = "熊"

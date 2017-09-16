@@ -22,7 +22,7 @@ public class CommonUtils {
 	public final static String VILLAGER = "villager";
 	public final static String KNIGHT = "knight";
 	public final static String DEVIL ="devil";
-	public final static String THIFE ="thife";
+	public final static String THIEF ="thief";
 	public final static String WOLFBOY ="wolfboy";
 	public final static String BEAR ="bear";
 	public final static String QTZL = "青铜战狼";

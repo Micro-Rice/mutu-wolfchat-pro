@@ -10,8 +10,8 @@
 <html lang="zh_cn">
 <style type="text/css">
 .circle-img {
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     overflow: hidden;
     border: 4px solid rgba(191, 191, 191, .24);
@@ -31,10 +31,11 @@
 <link rel="stylesheet" href="./css/jquery-weui.css">
 <script src="./js/jquery-1.11.0.js"></script>
 <script src="./js/jquery-weui.js"></script>
+<script src="./js/fastclick.js"></script>
 <script src="./js/tool.js"></script>
 <script type="text/javascript">
 $(function (){
-	
+	FastClick.attach(document.body);
 	var userInfo = '${userInfo}';
 	var preInfo = '${preInfo}'
 	var rMsg = "${rMsg}";
@@ -56,19 +57,17 @@ $(function (){
 		});
 	}
 	var pathImage = "<%=basePath%>images/mutu.jpg";
-	var $img = '<img style="width:90px;" src="'+pathImage+'"/>';
+	var $img = '<img style="width:120px;height:120px" src="'+pathImage+'"/>';
 	$("#circleImg").append($img);
 	
-	$("#circleImg img").error(function(){
-		$("#circleImg img").attr("src","<%=basePath%>images/mutu.jpg");
-	});
+	
 	
 	if (!!rMsg) {
 		$.alert("系统繁忙,请稍后再试!");
 	} else {
 		if (!!userInfo) {
 			pathImage = userInfo.openImg;
-			$img = '<img style="width:90px;" src="'+pathImage+'"/>';
+			$img = '<img style="width:120px;height:120px" src="'+pathImage+'"/>';
 			$("#circleImg").empty();
 			$("#circleImg").append($img);
 			if (!!preInfo) {
@@ -87,7 +86,11 @@ $(function (){
 			$.alert("系统繁忙,请稍后再试!");
 		}
 	}
-		
+	
+	$("#circleImg img").error(function(){
+		$("#circleImg img").attr("src","<%=basePath%>images/mutu.jpg");
+	});
+	
 	$("#loginBtn").click(function(){
 		if (checkSeat()) {
 			var openidEncode;
@@ -97,7 +100,7 @@ $(function (){
 			}
 			var roomId = $("#room").val();
 			var seat = $("#seat").val();
-			var r = base64encode(roomId);
+			var r = base64encode(utf16to8(roomId));
 			var s = base64encode(seat);
 			var pdata = {
 					"pq" : openidEncode,
@@ -105,21 +108,21 @@ $(function (){
 					"sw" : s,		
 			};
 			$.ajax({
-				url:"gotoSelect",
+				url:"<%=basePath%>gotoSelect",
 				type:"GET",
 				cache : false,
 				//设置同步，避免和自动刷新冲突导致数据不同步
 				async: false,
 				data : pdata,
 				success: function(data){
-					if ("success" ==  data.loginResult) {
+					if ("success" ==  data.message) {
 						$.alert("选座成功!",function() {
 							var url = "showResp?rz="+r+"&sw="+s;
 							window.location.href = url;
 						});
-					} else if ("error1" ==  data.loginResult) {
+					} else if ("error1" ==  data.message) {
 						$.alert("选座失败,该座位已被占用,请重新选座!");
-					} else if ("error2" ==  data.loginResult) {
+					} else {
 						$.alert("系统繁忙,请稍后再试!");
 					} 
 				},
@@ -130,7 +133,7 @@ $(function (){
 		}			
 	});	
 
-	$("#userform").on("focus",".weui_input",function(){
+	$("#userform").on("focus",".weui-input",function(){
 		clearErrMsg($(this));
 	});
 	
@@ -153,8 +156,8 @@ $(function (){
 	}
 	function checkSeat() {
 		var id = "seat";
-		var reg = /^[1-9]\d{2}$/;
 		var info = "请输入1-20座位号!";
+		var reg = /^[0-9]{1,2}$/;
 		var flag = validInput(id,reg,info);
 		return flag;
 	}
@@ -169,34 +172,37 @@ $(function (){
 <title>Mutu狼人杀</title>
 </head>
 <body>
-	<div style="margin:0px auto 5px auto;" class="circle-img" id="circleImg"></div>
+	<div style="margin:40px auto 80px auto;" class="circle-img" id="circleImg"></div>
 	<form id="userform">
-		<div class="weui_cells weui_cells_form">
-			<div class="weui_cell">
-				<div class="weui_cell_hd">
-					<label class="weui_label">房间名：</label>
+		<div class="weui-cells weui-cells_form">
+			<div class="weui-cell">
+				<div class="weui-cell_hd">
+					<label class="weui-label">房间名：</label>
 				</div>
-				<div class="weui_cell_bd">
-					<input id="room" tabindex="1" class="weui_input" type="text">
+				<div class="weui-cell_bd">
+					<input id="room" tabindex="1" class="weui-input" type="text">
 				</div>				
 			</div>
-			<div class="weui_cell">
-				<div class="weui_cell_hd">
-					<label class="weui_label">座位号：</label>
+			<div class="weui-cell">
+				<div class="weui-cell_hd">
+					<label class="weui-label">座位号：</label>
 				</div>
-				<div class="weui_cell_bd weui_cell_primary">
-					<input id="seat" tabindex="2" class="weui_input" type="text" placeholder="请输入1-20座位号">
+				<div class="weui-cell_bd weui-cell_primary">
+					<input id="seat" tabindex="2" class="weui-input" type="text" placeholder="请输入1-20座位号">
 				</div>
-				<div class="weui_cell_ft">
-                     <i class="weui_icon_warn" id="seatErr"></i>
-                     <i class="weui_icon_success" id="seatSuc" style="display:none"></i>
+				<div class="weui-cell__ft">
+                     <i class="weui-icon-warn" id="seatErr"></i>
+                     <i class="weui-icon-success" id="seatSuc" style="display:none"></i>
                  </div>
 			</div>		   
 		</div>
-		<div id="errorMsg" class="weui_cells_tips" style="text-align:center;color:red;"></div>
+		<div id="errorMsg" class="weui-cells__tips" style="text-align:center;color:red;"></div>
 		<div style="padding:15px;">
-			<div class="weui_btn weui_btn_primary" id="loginBtn">确 定</div>			
+			<div class="weui-btn weui-btn_primary" id="loginBtn">确 定</div>			
 		</div>		
 	</form>
+    <div class="weui-footer weui-footer_fixed-bottom">
+      	<p class="weui-footer__text">Copyright © 北京六维世纪文化传播有限公司</p>
+    </div>
 </body>
 </html>

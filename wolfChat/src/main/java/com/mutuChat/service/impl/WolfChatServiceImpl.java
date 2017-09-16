@@ -14,6 +14,7 @@ import com.mutuChat.wolfkill.dao.IWolfChatDao;
 import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
+import com.mutuChat.wolfkill.utils.ComMethod;
 import com.mutuChat.wolfkill.vo.ChatUserInfoVo;
 @Transactional
 @Service("wolfChatService")
@@ -43,6 +44,11 @@ public class WolfChatServiceImpl implements IWolfChatService{
 		if (chatUserInfo == null) {
 			chatUserInfo = new WolfKillChatUserInfo();
 			chatUserInfo.setOpenId(openid);
+			/**
+             * 需要生成不重复的短ID与openId对应
+             */
+            /*int playerId = ComMethod.randomByTime(1000000000);
+            chatUserInfo.setPlayerId(String.valueOf(playerId));*/
 		}
 		/**
 		 * 这里需要更新图片信息
@@ -74,5 +80,36 @@ public class WolfChatServiceImpl implements IWolfChatService{
             preInfo = preInfos.get(0);            
         }
         return preInfo;
+    }
+	
+	@Override
+    public String saveRoomAndSeatInfo(WolfKillPregameInfo preInfo) {
+        String message = "";
+        if (preInfo != null) {
+            String room = preInfo.getRoomId();
+            Integer seat = preInfo.getSeatId();
+            if (room != null && seat != null) {
+                QueryConditions condition = new QueryConditions();
+                condition.setConditionEqual("roomId", room);
+                condition.setConditionEqual("seatId", seat);
+                List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
+                if (!preInfos.isEmpty()) {
+                    WolfKillPregameInfo preInfoEd = preInfos.get(0);
+                    if (preInfoEd.getOpenId() != null && preInfoEd.getOpenId().equals(preInfo.getOpenId())) {
+                        message = "success";
+                    } else {
+                        message = "error1";
+                    }
+                } else {
+                    wolfChatDao.savePregameInfo(preInfo);
+                    message = "success";
+                }
+            } else {
+                logger.error("room is " + room +"And seat is" + seat);
+            }
+        } else {
+            logger.error("WolfKillPregameInfo is null");
+        }
+        return message;
     }
 }

@@ -47,7 +47,7 @@ public interface IWolfKillServive {
     /**
      * 查询玩家基本信息
      */
-    public List<PlayerInfoVo> getPlayerBaseInfo(String jsonDate);
+    public List<PlayerInfoVo> getPlayerBaseInfo();
     /**
      * 处理个人数据
      */

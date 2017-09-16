@@ -162,7 +162,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	public String updataUserInfo(String userInfo) {
-		List<PdataVo> pdatas = JsonUtils.jsonToArrayList(userInfo, PdataVo.class);
+		 List<PdataVo> pdatas = JsonUtils.jsonToArrayList(userInfo, PdataVo.class);
 		 List<WolfKillMainInfo> mainInfos = new ArrayList<WolfKillMainInfo>();
 		 List<WolfKillPerInfo> perInfos = new ArrayList<WolfKillPerInfo>();
 		 Map<String,Integer> levelMap = new HashMap<String,Integer>();
@@ -339,15 +339,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     }
 	private CusInfoVo parseUserInfo(PdataVo userInfo) {
 		CusInfoVo info = new CusInfoVo();
-		/**
-		 * hardCode,以后改成JSON;
-		 * 0-name
-		 * 1-uid
-		 * 2-rolename
-		 * 3-win or lose
-		 * 4-mvp
-		 * 5-roleachive
-		 */
+		
 		info.setName(userInfo.getName());
 		info.setUid(String.valueOf(userInfo.getId()));		
 		/**
@@ -360,7 +352,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		/**
 		 * 成就积分计算,并判断是否达成成就
 		 */
-		int achive = computeAchive(roleachive,roleName,info);
+		computeAchive(roleachive,roleName,info);
 		/**
 		 * 根据成就次数，换算成就点数
 		 */
@@ -374,7 +366,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 			info.setMvp(1);
 		}
 		int camp = userInfo.getCamp();		
-		int leveladd = computeLevelAdd(roleName,winSign,mvpSign,achive,camp);
+		int leveladd = userInfo.getScore();
+		//computeLevelAdd(roleName,winSign,mvpSign,achive,camp);
 		info.setLeveladd(leveladd);
 		
 		if (camp == 2) {
@@ -398,7 +391,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		}
 		return info;
 	}
-	private int computeLevelAdd(String roleName,String winSign,String mvpSign,int achive,int camp) {
+	/* 计算积分,改为前端计算.
+	 * private int computeLevelAdd(String roleName,String winSign,String mvpSign,int achive,int camp) {
 		int r = 0;
 		if (camp == 0) {
 			if (CommonUtils.VILLAGER.equals(roleName) || CommonUtils.WOLFBOY.equals(roleName)) {
@@ -408,7 +402,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 					|| CommonUtils.WALKER.equals(roleName) || CommonUtils.KNIGHT.equals(roleName)) {
 				r = r + (CommonUtils.ONE.equals(winSign)?CommonUtils.GODADD1:-CommonUtils.GODADD1);
 			} else if (CommonUtils.IDIOT.equals(roleName) ||CommonUtils. SILENT.equals(roleName) 
-					|| CommonUtils.CUPID.equals(roleName) || CommonUtils.THIFE.equals(roleName)
+					|| CommonUtils.CUPID.equals(roleName) || CommonUtils.THIEF.equals(roleName)
 					|| CommonUtils.BEAR.equals(roleName)){
 				r = r + (CommonUtils.ONE.equals(winSign)?CommonUtils.GODADD2:-CommonUtils.GODADD2);
 			} 
@@ -417,11 +411,11 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 				|| CommonUtils.DEVIL.equals(roleName) || CommonUtils.WHITEWOLF.equals(roleName)
 				|| CommonUtils.WOLFBOY.equals(roleName) || CommonUtils.CUPID.equals(roleName)) {
 				r = r + (CommonUtils.ONE.equals(winSign)?CommonUtils.WOLADD:-CommonUtils.WOLADD);
-			} else if (CommonUtils.THIFE.equals(roleName)) {
+			} else if (CommonUtils.THIEF.equals(roleName)) {
 				r = r + (CommonUtils.ONE.equals(winSign)?CommonUtils.GODADD2:-CommonUtils.GODADD2);
 			}
 		} else if (camp == 2) {
-			r = r + (CommonUtils.ONE.equals(winSign)?CommonUtils.OTHERADD:-CommonUtils.GODADD2);
+			r = r + (CommonUtils.ONE.equals(winSign)?CommonUtils.OTHERADD:-CommonUtils.PEOADD);
 		}
 		if (CommonUtils.ONE.equals(mvpSign)) {
 			r = r + CommonUtils.MVPADD;
@@ -431,7 +425,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 		}
 		return r;
 		
-	}
+	}*/
 	private int computeAchive(String cjSign,String roleName,CusInfoVo info) {
 		int r = 0;
 	    if (cjSign == null || roleName == null) {
@@ -624,7 +618,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     	} else if ("12".equals(sign)) {
     		result = CommonUtils.KNIGHT;
     	} else if ("14".equals(sign)) {
-    		result = CommonUtils.THIFE;
+    		result = CommonUtils.THIEF;
     	} else if ("15".equals(sign)) {
     		result = CommonUtils.CUPID;
     	} else if ("16".equals(sign)) {
@@ -741,45 +735,42 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	@Override
-	public List<PlayerInfoVo> getPlayerBaseInfo(String jsonDate) {
+	public List<PlayerInfoVo> getPlayerBaseInfo() {
 		List<PlayerInfoVo> playerInfos = new ArrayList<PlayerInfoVo>();
-		if (jsonDate != null) {
-			List<Integer> playerIds = JsonUtils.jsonToArrayList(jsonDate, Integer.class);
-			for (int i = 0; i < playerIds.size(); i++) {
-				int playerId = playerIds.get(i);
-				QueryConditions condition = new QueryConditions();
-				condition.setConditionEqual("number", String.valueOf(playerId));
-				List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
-				QueryConditions condition1 = new QueryConditions();
-				condition1.setConditionEqual("uniqueId", playerId);
-				List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition1);
-				if (!pospalDatas.isEmpty()) {
-					WolfKillPospalInfo pospal = pospalDatas.get(0);
-					PlayerInfoVo playerInfo = new PlayerInfoVo();
-					int point = 0;
-					int pointMax = 0;
-					String telephone = pospal.getPhone();
-					String name = pospal.getName();
-					if (!mainDatas.isEmpty()) {
-						WolfKillMainInfo mainData = mainDatas.get(0);
+		QueryConditions condition = new QueryConditions();
+		List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
+		List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
+		for (int i = 0; i < pospalDatas.size(); i++) {
+			WolfKillPospalInfo pospal = pospalDatas.get(i);
+			PlayerInfoVo playerInfo = new PlayerInfoVo();
+			String uniqueId = pospal.getNumber();
+			int point = 0;
+			int pointMax = 0;
+			String telephone = pospal.getPhone();
+			String name = pospal.getName();
+			if (uniqueId != null && StringUtils.checkIsNum(uniqueId)) {
+				for (int j = 0; j < mainDatas.size(); j++) {
+					WolfKillMainInfo mainData = mainDatas.get(j);
+					if (uniqueId.equals(mainData.getUniqueId())) {
 						if (mainData.getLevelNum() != null) {
 							point = mainData.getLevelNum();
 						}
 						if (mainData.getLevelMaxNum() != null) {
 							pointMax = mainData.getLevelMaxNum();
 						}
-					}
-					playerInfo.setNum((long)playerId);
-					playerInfo.setName(name);
-					playerInfo.setPoint(point);
-					playerInfo.setPointMax(pointMax);
-					if (telephone != null && StringUtils.checkIsNum(telephone)) {
-						playerInfo.setTelephone(Long.parseLong(telephone));
-					}
-					playerInfos.add(playerInfo);
-				}	
+						break;
+					}					
+				}
+				playerInfo.setNum(Long.parseLong(uniqueId));
 			}
-		}	
+			playerInfo.setName(name);
+			playerInfo.setPoint(point);
+			playerInfo.setPointMax(pointMax);
+			if (telephone != null && StringUtils.checkIsNum(telephone)) {
+				playerInfo.setTelephone(Long.parseLong(telephone));
+			}		
+			playerInfos.add(playerInfo);
+		}
 		return playerInfos;
 	}
 	

@@ -29,5 +29,7 @@ public interface IWolfChatService {
 	 */
 	public void savePlayerInfo(WolfKillChatUserInfo playerInfo);
 	
-	public WolfKillPregameInfo getPregameInfoByOpenId(String openId);
+	 public WolfKillPregameInfo getPregameInfoByOpenId(String openId);    
+		
+	 public String saveRoomAndSeatInfo(WolfKillPregameInfo preInfo);
 }

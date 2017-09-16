@@ -43,4 +43,8 @@ public class WolfChatDaoImpl extends BaseDao implements IWolfChatDao{
 	        String hql = "from WolfKillPregameInfo";       
 	        return super.find(hql, condition);
 	    }
+	 @Override
+	    public void savePregameInfo(WolfKillPregameInfo preInfo) {
+	        super.saveWithFlush(preInfo);
+	    }
 }
