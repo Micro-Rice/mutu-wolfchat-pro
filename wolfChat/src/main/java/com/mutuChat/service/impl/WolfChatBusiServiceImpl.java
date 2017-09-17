@@ -21,14 +21,15 @@ public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
 	@Autowired
     private IWolfChatService wolfChatService;
 	
-	public final static String APPID = "wx41b1efe6d6d3127f";
-	public final static String SECRET = "4dff1cb1b0234c09a219afb0186f2965";
+	public final static String APPID = "wxe92f20cb00c9e8a5";
+	public final static String SECRET = "56bf3a46f911d4640c3a22dddd4e0410";
 	private static Logger logger = Logger.getLogger(WolfChatBusiServiceImpl.class);
 	
 	@Override
 	public WolfKillChatUserInfo getAndSaveChatPlayerInfo(String code, HttpSession session,String backmsg) {
 		String openid = null;
 		WolfKillChatUserInfo chatUser = null;
+		logger.info("the weixin code is " +code);
 		if (session != null && session.getAttribute("openid") != null) {
 			openid = session.getAttribute("openid").toString();
 		}		

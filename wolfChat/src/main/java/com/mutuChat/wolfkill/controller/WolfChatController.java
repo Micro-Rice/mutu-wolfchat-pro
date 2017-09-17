@@ -47,7 +47,7 @@ public class WolfChatController {
 		String openid = null;
 		String strJsonUser = null;
 		HttpSession session=request.getSession();
-		String userCode = request.getParameter("code");
+		String userCode = request.getParameter("code");		
 		WolfKillChatUserInfo chatUser = wolfChatBusiService.getAndSaveChatPlayerInfo(userCode, session, backmsg);
 		if (chatUser != null) {
 			openid = chatUser.getOpenId();
@@ -79,7 +79,7 @@ public class WolfChatController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "selectSeat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
+	/*@RequestMapping(value = "selectSeat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     public ModelAndView selectSeat(HttpServletRequest request) {
 	    logger.info("##selectSeat begin##");
 	    String backmsg = null;
@@ -132,18 +132,18 @@ public class WolfChatController {
                     if (preInfo != null) {
                         preInfo.setRoomId(roomId);
                         preInfo.setSeatId(Integer.parseInt(seatId));
-                        /**
+                        *//**
                          * 保存
-                         */
+                         *//*
                         message = wolfChatService.saveRoomAndSeatInfo(preInfo);
                     } else {
                         WolfKillPregameInfo  newPreInfo = new WolfKillPregameInfo();
                         newPreInfo.setOpenId(openId);
                         newPreInfo.setRoomId(roomId);
                         newPreInfo.setSeatId(Integer.parseInt(seatId));
-                        /**
+                        *//**
                          * 保存
-                         */
+                         *//*
                         message = wolfChatService.saveRoomAndSeatInfo(newPreInfo);
                     }
                 }
@@ -193,5 +193,5 @@ public class WolfChatController {
             }           
         }
         return rooms;
-    }
+    }*/
 }
