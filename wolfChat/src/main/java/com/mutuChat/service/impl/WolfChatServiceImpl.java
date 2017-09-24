@@ -95,10 +95,12 @@ public class WolfChatServiceImpl implements IWolfChatService{
                 List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
                 if (!preInfos.isEmpty()) {
                     WolfKillPregameInfo preInfoEd = preInfos.get(0);
-                    if (preInfoEd.getOpenId() != null && preInfoEd.getOpenId().equals(preInfo.getOpenId())) {
-                        message = "success";
+                    if (preInfoEd.getOpenId() == null || !preInfoEd.getOpenId().equals(preInfo.getOpenId())) {
+                    	preInfoEd.setOpenId(preInfo.getOpenId());
+                    	wolfChatDao.savePregameInfo(preInfoEd);
+                    	message = "success";
                     } else {
-                        message = "error1";
+                        message = "success";
                     }
                 } else {
                     wolfChatDao.savePregameInfo(preInfo);

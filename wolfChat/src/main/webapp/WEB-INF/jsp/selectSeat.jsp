@@ -70,18 +70,32 @@ $(function (){
 			$img = '<img style="width:120px;height:120px" src="'+pathImage+'"/>';
 			$("#circleImg").empty();
 			$("#circleImg").append($img);
-			if (!!preInfo) {
-				var roomId = preInfo.roomId;
-				var seat = preInfo.seatId;
-				$("#room").val(roomId);
-				$("#seat").val(seat);
-				$("#room").attr("disabled","disabled");
-				$("#seat").attr("disabled","disabled");
-				$.confirm("您已选过座位,是否需要重新选座?",function(){
-					$("#room").removeAttr("disabled");
-					$("#seat").removeAttr("disabled");
+			var phone = userInfo.playerPhone;
+			//与银豹会员号绑定,如果自己随机生成的会员号,则不需要.
+			if (!!phone) {
+				if (!!preInfo) {
+					var roomId = preInfo.roomId;
+					var seat = preInfo.seatId;
+					$("#room").val(roomId);
+					$("#seat").val(seat);
+					$("#room").attr("disabled","disabled");
+					$("#seat").attr("disabled","disabled");
+					$.confirm("您已选过座位,是否需要重新选座?",function(){
+						$("#room").removeAttr("disabled");
+						$("#seat").removeAttr("disabled");
+					});
+				}
+			} else {
+				$.confirm("您还没有绑定会员卡,积分将无法累计,确定要绑定会员卡?",function(){
+					var user = base64encode(utf16to8(JSON.stringify(userInfo)));
+					var url = "forwardUserBand?rz="+user;
+					window.location.href = url;
+				},
+				function(){
+					$("#room").attr("disabled","disabled");
+					$("#seat").attr("disabled","disabled");
 				});
-			}
+			}			
 		} else {
 			$.alert("系统繁忙,请稍后再试!");
 		}
@@ -120,8 +134,6 @@ $(function (){
 							var url = "showResp?rz="+r+"&sw="+s;
 							window.location.href = url;
 						});
-					} else if ("error1" ==  data.message) {
-						$.alert("选座失败,该座位已被占用,请重新选座!");
 					} else {
 						$.alert("系统繁忙,请稍后再试!");
 					} 

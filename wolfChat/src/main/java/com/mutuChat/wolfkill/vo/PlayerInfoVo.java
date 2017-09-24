@@ -1,11 +1,11 @@
 package com.mutuChat.wolfkill.vo;
 
 public class PlayerInfoVo {
-	private Long num;
+	private Long num = (long)-1;
 	private String name;
 	private Long telephone;
-	private Integer point;
-	private Integer pointMax;
+	private Integer point = 0;
+	private Integer pointMax = 0;
 	public Long getNum() {
 		return num;
 	}

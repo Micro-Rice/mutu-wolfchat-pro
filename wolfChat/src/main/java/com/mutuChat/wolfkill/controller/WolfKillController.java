@@ -152,10 +152,12 @@ public class WolfKillController {
     @RequestMapping(value = "queryPlayerId", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String queryPlayerId(HttpServletRequest request) {
-    	logger.info(cMethod.getIpAddr(request) + "-queryPlayerId begin" );
-    	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo();
+    	logger.info(cMethod.getIpAddr(request) + "-queryPlayerId begin");
+    	String room = request.getParameter("room");
+    	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo(room);
     	return JsonConvertor.toJson(players);    	   	
     }
+    
     @RequestMapping(value = "updataMemInfo", method = RequestMethod.POST,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String updataMemInfo(HttpServletRequest request) {

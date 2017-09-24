@@ -79,7 +79,7 @@ public class WolfChatController {
 		return mav;
 	}
 	
-	/*@RequestMapping(value = "selectSeat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
+	@RequestMapping(value = "selectSeat", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     public ModelAndView selectSeat(HttpServletRequest request) {
 	    logger.info("##selectSeat begin##");
 	    String backmsg = null;
@@ -132,18 +132,18 @@ public class WolfChatController {
                     if (preInfo != null) {
                         preInfo.setRoomId(roomId);
                         preInfo.setSeatId(Integer.parseInt(seatId));
-                        *//**
+                        /**
                          * 保存
-                         *//*
+                         */
                         message = wolfChatService.saveRoomAndSeatInfo(preInfo);
                     } else {
                         WolfKillPregameInfo  newPreInfo = new WolfKillPregameInfo();
                         newPreInfo.setOpenId(openId);
                         newPreInfo.setRoomId(roomId);
                         newPreInfo.setSeatId(Integer.parseInt(seatId));
-                        *//**
+                        /**
                          * 保存
-                         *//*
+                         */
                         message = wolfChatService.saveRoomAndSeatInfo(newPreInfo);
                     }
                 }
@@ -176,7 +176,24 @@ public class WolfChatController {
         mav.addObject("seat",seat);
 	    return mav;	    
 	}
-
+	
+	@RequestMapping(value = "forwardUserBand", method = RequestMethod.GET)
+	public ModelAndView forwardUserBand(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("userlogin");
+		String userCode = request.getParameter("rz");
+		String user = null;
+		if (userCode != null) {
+			try {
+				user = new String(Base64.decodeBase64(userCode),"utf-8");
+            } catch (UnsupportedEncodingException e) {
+                logger.error("DecodeBase64 is" +e);
+            }
+		} else {
+			logger.error("userCode is null");
+		}		
+		mav.addObject("userInfo",user);
+		return mav;
+	}
 	
 	public List<String> initRoomLayout(String file,String shopName){
 	    ComMethod comMethod = new ComMethod();
@@ -193,5 +210,5 @@ public class WolfChatController {
             }           
         }
         return rooms;
-    }*/
+    }
 }

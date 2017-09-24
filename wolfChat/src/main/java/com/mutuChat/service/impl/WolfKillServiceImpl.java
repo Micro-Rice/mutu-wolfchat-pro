@@ -33,6 +33,7 @@ import com.mutuChat.wolfkill.model.WolfKillMainInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPerInfo;
 import com.mutuChat.wolfkill.model.WolfKillPerInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
+import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
 import com.mutuChat.wolfkill.utils.CommonUtils;
 import com.mutuChat.wolfkill.utils.JsonUtils;
 import com.mutuChat.wolfkill.utils.StringUtils;
@@ -735,40 +736,48 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	@Override
-	public List<PlayerInfoVo> getPlayerBaseInfo() {
+	public List<PlayerInfoVo> getPlayerBaseInfo(String room) {
 		List<PlayerInfoVo> playerInfos = new ArrayList<PlayerInfoVo>();
 		QueryConditions condition = new QueryConditions();
-		List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
-		List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
-		for (int i = 0; i < pospalDatas.size(); i++) {
-			WolfKillPospalInfo pospal = pospalDatas.get(i);
+		condition.setConditionEqual("roomId", room);
+		List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
+		for (int i = 0; i < preInfos.size(); i++) {
 			PlayerInfoVo playerInfo = new PlayerInfoVo();
-			String uniqueId = pospal.getNumber();
+			WolfKillPregameInfo preInfo = preInfos.get(i);
 			int point = 0;
 			int pointMax = 0;
-			String telephone = pospal.getPhone();
-			String name = pospal.getName();
-			if (uniqueId != null && StringUtils.checkIsNum(uniqueId)) {
-				for (int j = 0; j < mainDatas.size(); j++) {
-					WolfKillMainInfo mainData = mainDatas.get(j);
-					if (uniqueId.equals(mainData.getUniqueId())) {
-						if (mainData.getLevelNum() != null) {
-							point = mainData.getLevelNum();
-						}
-						if (mainData.getLevelMaxNum() != null) {
-							pointMax = mainData.getLevelMaxNum();
-						}
-						break;
-					}					
-				}
-				playerInfo.setNum(Long.parseLong(uniqueId));
+			String playerId = null;
+			String telephone = null;
+			String playerName = null;
+			String openId = preInfo.getOpenId();
+			QueryConditions condition1 = new QueryConditions();
+			condition1.setConditionEqual("openId", openId);
+			WolfKillChatUserInfo chatUser = wolfChatDao.findChatUserInfo(condition1);
+			if (chatUser != null) {
+				telephone = chatUser.getPlayerPhone();
+				playerId = chatUser.getPlayerId();
 			}
-			playerInfo.setName(name);
-			playerInfo.setPoint(point);
-			playerInfo.setPointMax(pointMax);
+			QueryConditions condition2 = new QueryConditions();
+			condition2.setConditionEqual("uniqueId", playerId);
+			List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition);
+			if (!mainDatas.isEmpty()) {
+				WolfKillMainInfo mainData = mainDatas.get(0);
+				if (mainData.getLevelNum() != null) {
+					point = mainData.getLevelNum();
+				}
+				if (mainData.getLevelMaxNum() != null) {
+					pointMax = mainData.getLevelMaxNum();
+				}
+			}
+			if (playerId != null && StringUtils.checkIsNum(playerId)) {
+				playerInfo.setNum(Long.parseLong(playerId));
+			}
 			if (telephone != null && StringUtils.checkIsNum(telephone)) {
 				playerInfo.setTelephone(Long.parseLong(telephone));
-			}		
+			}
+			playerInfo.setName(playerName);
+			playerInfo.setPoint(point);
+			playerInfo.setPointMax(pointMax);	
 			playerInfos.add(playerInfo);
 		}
 		return playerInfos;
