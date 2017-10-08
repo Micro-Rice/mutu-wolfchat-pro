@@ -23,8 +23,17 @@ public class ChatPlayerInfoVo {
 	//网页显示用
 	String playerId;
 	int mvp;
+	String season;
 	List<RoleInfoVo> roleInfos = new ArrayList<RoleInfoVo>();
 	List<HisMatchVo> hisMatchs = new ArrayList<HisMatchVo>();
+	
+	
+	public String getSeason() {
+		return season;
+	}
+	public void setSeason(String season) {
+		this.season = season;
+	}
 	public int getMvp() {
 		return mvp;
 	}

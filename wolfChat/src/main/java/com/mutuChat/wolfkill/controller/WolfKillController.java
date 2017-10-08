@@ -125,13 +125,15 @@ public class WolfKillController {
         ModelAndView mav = new ModelAndView("searchPlayer");
         List<ChatPlayerInfoVo> wolfDatas = new ArrayList<ChatPlayerInfoVo>();
         List<String> matchNums = wolfKillService.getMatchNums(playerUid);
+        int maxMatchNum = wolfKillService.getMaxMatchNum() + 1;
         if (!playerUid.isEmpty() && playerUid != null) {
         	/**
         	 * 当季数据
         	 */
         	ChatPlayerInfoVo data = wolfKillService.getPlayerMainDataByUid(playerUid, "0");
         	if (data != null) {
-    			wolfDatas.add(data);
+        		data.setSeason(String.valueOf(maxMatchNum));
+        		wolfDatas.add(data);
     		}
         	/**
         	 * 历史数据
@@ -139,22 +141,21 @@ public class WolfKillController {
         	for (int i = 0; i < matchNums.size(); i++) {
         		ChatPlayerInfoVo hisdata = wolfKillService.getPlayerMainDataByUid(playerUid, matchNums.get(i));
         		if (hisdata != null) {
+        			hisdata.setSeason(matchNums.get(i));
         			wolfDatas.add(hisdata);
         		}
         	}       	
         }
-        int maxMatchNum = wolfKillService.getMaxMatchNum() + 1;
+        
         mav.addObject("maxMatchNum",maxMatchNum);
         mav.addObject("pMainDatas", JsonUtils.toJson(wolfDatas));
-        mav.addObject("matchNums",JsonUtils.toJson(matchNums));
         return mav;
     }
     @RequestMapping(value = "queryPlayerId", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String queryPlayerId(HttpServletRequest request) {
-    	logger.info(cMethod.getIpAddr(request) + "-queryPlayerId begin");
-    	String room = request.getParameter("room");
-    	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo(room);
+    	logger.info(cMethod.getIpAddr(request) + "-queryPlayerId begin" );
+    	List<PlayerInfoVo> players = wolfKillService.getPlayerBaseInfo();
     	return JsonConvertor.toJson(players);    	   	
     }
     

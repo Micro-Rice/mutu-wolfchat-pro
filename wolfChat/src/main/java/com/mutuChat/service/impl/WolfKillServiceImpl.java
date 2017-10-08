@@ -33,7 +33,6 @@ import com.mutuChat.wolfkill.model.WolfKillMainInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPerInfo;
 import com.mutuChat.wolfkill.model.WolfKillPerInfoHistory;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
-import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
 import com.mutuChat.wolfkill.utils.CommonUtils;
 import com.mutuChat.wolfkill.utils.JsonUtils;
 import com.mutuChat.wolfkill.utils.StringUtils;
@@ -72,7 +71,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     public List<ChatPlayerInfoVo> getWolfKillMainData(int showSize,String matchNum) {        
         List<ChatPlayerInfoVo> resultDatas = new ArrayList<ChatPlayerInfoVo>();        
         QueryConditions condition = new QueryConditions(); 
-        String orderBy = "levelNum desc";
+        String orderBy = "levelNum desc,achiveNum desc,levelMaxNum desc";
         condition.setOrderBy(orderBy);
         List<WolfKillMainInfo> mainDatas = null;
         List<WolfKillMainInfoHistory> mainHisDatas = null;
@@ -158,7 +157,16 @@ public class WolfKillServiceImpl implements IWolfKillServive{
         			break;
         		}
         	}
-        }         
+        } else {
+        	for (int i = 0; i < mainDatas.size(); i++) {
+        		WolfKillMainInfo mainData = mainDatas.get(i);
+        		String pName = mainData.getPlayerName();
+        		if (pName != null && pName.equals(playerUid)) {
+        			resultData = parsePlayerData(mainData,i+1);
+        			break;
+        		}
+        	}
+        }
         return resultData;       
 	}
 	
@@ -715,7 +723,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	    	  for (int j = 0; j < mainDatas.size(); j++) {
 	    		  WolfKillMainInfo local = mainDatas.get(j);
 	    		  String unique = local.getUniqueId();
-	    		  int levelNum = local.getLevelNum();
+	    		  int levelNum = local.getLevelMaxNum();
 	    		  if (number != null && number.equals(unique)) {
 	    			  int p = 0;
 	    			  if (point != null) {
@@ -736,58 +744,55 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	}
 	
 	@Override
-	public List<PlayerInfoVo> getPlayerBaseInfo(String room) {
+	public List<PlayerInfoVo> getPlayerBaseInfo() {
 		List<PlayerInfoVo> playerInfos = new ArrayList<PlayerInfoVo>();
 		QueryConditions condition = new QueryConditions();
-		condition.setConditionEqual("roomId", room);
-		List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
-		for (int i = 0; i < preInfos.size(); i++) {
+		List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
+		List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition); 
+		for (int i = 0; i < pospalDatas.size(); i++) {
+			WolfKillPospalInfo pospal = pospalDatas.get(i);
 			PlayerInfoVo playerInfo = new PlayerInfoVo();
-			WolfKillPregameInfo preInfo = preInfos.get(i);
+			String uniqueId = pospal.getNumber();
 			int point = 0;
 			int pointMax = 0;
-			String playerId = null;
-			String telephone = null;
-			String playerName = null;
-			String openId = preInfo.getOpenId();
-			QueryConditions condition1 = new QueryConditions();
-			condition1.setConditionEqual("openId", openId);
-			WolfKillChatUserInfo chatUser = wolfChatDao.findChatUserInfo(condition1);
-			if (chatUser != null) {
-				telephone = chatUser.getPlayerPhone();
-				playerId = chatUser.getPlayerId();
-			}
-			QueryConditions condition2 = new QueryConditions();
-			condition2.setConditionEqual("uniqueId", playerId);
-			List<WolfKillMainInfo> mainDatas = wolfKillDao.queryMainDataByCondition(condition);
-			if (!mainDatas.isEmpty()) {
-				WolfKillMainInfo mainData = mainDatas.get(0);
-				if (mainData.getLevelNum() != null) {
-					point = mainData.getLevelNum();
+			String telephone = pospal.getPhone();
+			String name = pospal.getName();
+			if (uniqueId != null && StringUtils.checkIsNum(uniqueId)) {
+				for (int j = 0; j < mainDatas.size(); j++) {
+					WolfKillMainInfo mainData = mainDatas.get(j);
+					if (uniqueId.equals(mainData.getUniqueId())) {
+						if (mainData.getLevelNum() != null) {
+							point = mainData.getLevelNum();
+						}
+						if (mainData.getLevelMaxNum() != null) {
+							pointMax = mainData.getLevelMaxNum();
+						}
+						break;
+					}					
 				}
-				if (mainData.getLevelMaxNum() != null) {
-					pointMax = mainData.getLevelMaxNum();
-				}
+				playerInfo.setNum(Long.parseLong(uniqueId));
 			}
-			if (playerId != null && StringUtils.checkIsNum(playerId)) {
-				playerInfo.setNum(Long.parseLong(playerId));
-			}
+			playerInfo.setName(name);
+			playerInfo.setPoint(point);
+			playerInfo.setPointMax(pointMax);
 			if (telephone != null && StringUtils.checkIsNum(telephone)) {
 				playerInfo.setTelephone(Long.parseLong(telephone));
-			}
-			playerInfo.setName(playerName);
-			playerInfo.setPoint(point);
-			playerInfo.setPointMax(pointMax);	
+			}		
 			playerInfos.add(playerInfo);
 		}
 		return playerInfos;
-	}
+}
 	
 	@Override
 	public List<String> getMatchNums(String playerUid) {
 		List<String> res = new ArrayList<String>();
-		QueryConditions condition = new QueryConditions(); 
-		condition.setConditionEqual(CommonUtils.UNIQUE_ID, playerUid);
+		QueryConditions condition = new QueryConditions();
+		if (StringUtils.checkIsNum(playerUid)) {
+			condition.setConditionEqual(CommonUtils.UNIQUE_ID, playerUid);
+		} else {
+			condition.setConditionEqual("playerName", playerUid);
+		}
+		
 		String orderBy = "matchNum desc";
         condition.setOrderBy(orderBy);
 		List<Integer> matchNums = wolfKillDao.queryMatchNum(condition);

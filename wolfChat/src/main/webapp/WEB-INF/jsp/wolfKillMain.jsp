@@ -267,8 +267,11 @@ function validAndOrder() {
 					<li id = "mutuS_1" class="matchLi" style="cursor:pointer;">
 						MUTU S1赛季
 					</li>
-					<li  id = "mutuS_0" class="matchLi active-s" style="cursor:pointer;">
+					<li id = "mutuS_2" class="matchLi" style="cursor:pointer;">
 						MUTU S2赛季
+					</li>
+					<li  id = "mutuS_0" class="matchLi active-s" style="cursor:pointer;">
+						MUTU S3赛季
 					</li>
 				</ul>
 			</div> 
