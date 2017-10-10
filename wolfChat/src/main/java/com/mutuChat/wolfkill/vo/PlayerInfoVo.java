@@ -6,6 +6,13 @@ public class PlayerInfoVo {
 	private Long telephone;
 	private Integer point = 0;
 	private Integer pointMax = 0;
+	private Integer seat;
+	public Integer getSeat() {
+		return seat;
+	}
+	public void setSeat(Integer seat) {
+		this.seat = seat;
+	}
 	public Long getNum() {
 		return num;
 	}

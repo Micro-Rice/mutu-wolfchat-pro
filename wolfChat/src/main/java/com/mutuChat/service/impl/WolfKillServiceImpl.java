@@ -668,10 +668,14 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	@Override
 	public void updatePospalMemInfo(List<ImageResponseDataDetail> rdds) {
 		List<WolfKillPospalInfo> posInfos = new ArrayList<WolfKillPospalInfo>();
+		List<String> userNums = new ArrayList<String>();
 		QueryConditions condition = new QueryConditions();
 		try {
 			List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
-			wolfKillDao.deletePospalMemList(pospalDatas);
+			for (int i = 0; i < pospalDatas.size(); i++) {
+				WolfKillPospalInfo posData = pospalDatas.get(i);
+				userNums.add(posData.getNumber());
+			}
 			for (int i = 0; i < rdds.size(); i++) {
 				ImageResponseDataDetail rdd = rdds.get(i);
 				List<MemInfoVo> memInfos = rdd.getResult();
@@ -680,24 +684,27 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 					if (!"1".equals(minfo.getEnable())) {
 						continue;
 					}
-					WolfKillPospalInfo pinfo = new WolfKillPospalInfo();
-					pinfo.setCustomerUid(minfo.getCustomerUid());
-					pinfo.setCategoryName(minfo.getCategoryName());
-					pinfo.setAddress(minfo.getAddress());
-					pinfo.setBalance(Float.parseFloat(minfo.getBalance()));
-					pinfo.setBirthday(minfo.getBirthday());
-					pinfo.setDiscount(Float.parseFloat(minfo.getDiscount()));
-					pinfo.setCreatedDate(minfo.getCreatedDate());
-					pinfo.setEmail(minfo.getEmail());
-					pinfo.setEnable(Integer.parseInt(minfo.getEnable()));
-					pinfo.setName(minfo.getName());
-					pinfo.setNumber(minfo.getNumber());
-					pinfo.setOnAccount(Integer.parseInt(minfo.getOnAccount()));
-					pinfo.setPhone(minfo.getPhone());
-					pinfo.setPoint(Float.parseFloat(minfo.getPoint()));
-					pinfo.setQq(minfo.getQq());
-					posInfos.add(pinfo);
-					}
+					String number = minfo.getNumber();
+					if (!userNums.contains(number)) {
+						WolfKillPospalInfo pinfo = new WolfKillPospalInfo();
+						pinfo.setCustomerUid(minfo.getCustomerUid());
+						pinfo.setCategoryName(minfo.getCategoryName());
+						pinfo.setAddress(minfo.getAddress());
+						pinfo.setBalance(Float.parseFloat(minfo.getBalance()));
+						pinfo.setBirthday(minfo.getBirthday());
+						pinfo.setDiscount(Float.parseFloat(minfo.getDiscount()));
+						pinfo.setCreatedDate(minfo.getCreatedDate());
+						pinfo.setEmail(minfo.getEmail());
+						pinfo.setEnable(Integer.parseInt(minfo.getEnable()));
+						pinfo.setName(minfo.getName());
+						pinfo.setNumber(minfo.getNumber());
+						pinfo.setOnAccount(Integer.parseInt(minfo.getOnAccount()));
+						pinfo.setPhone(minfo.getPhone());
+						pinfo.setPoint(Float.parseFloat(minfo.getPoint()));
+						pinfo.setQq(minfo.getQq());
+						posInfos.add(pinfo);
+					}					
+				}
 			}
 			wolfKillDao.savePospalMemList(posInfos);
 		} catch (Exception e) {
