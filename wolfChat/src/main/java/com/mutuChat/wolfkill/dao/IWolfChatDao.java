@@ -15,4 +15,10 @@ public interface IWolfChatDao {
 	public List<WolfKillPregameInfo> findPregameInfo(QueryConditions condition);
 	
 	public void savePregameInfo(WolfKillPregameInfo preInfo);
+	
+	public void savePregameInfos(List<WolfKillPregameInfo> preInfos);
+	
+	public void deletePregameInfo(List<WolfKillPregameInfo> preInfos);
+	
+	
 }

@@ -38,4 +38,6 @@ public interface IWolfChatService {
 	 
 	 public List<PlayerInfoVo> getChatPlayerInfo(String room);
 	 
+	 public String updatePreChatPlayer(String pdata);
+	 
 }

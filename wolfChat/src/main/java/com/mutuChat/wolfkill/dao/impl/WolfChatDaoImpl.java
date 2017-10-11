@@ -47,4 +47,14 @@ public class WolfChatDaoImpl extends BaseDao implements IWolfChatDao{
 	    public void savePregameInfo(WolfKillPregameInfo preInfo) {
 	        super.saveWithFlush(preInfo);
 	    }
+
+	@Override
+	public void deletePregameInfo(List<WolfKillPregameInfo> preInfos) {
+		super.deleteAll(preInfos);		
+	}
+
+	@Override
+	public void savePregameInfos(List<WolfKillPregameInfo> preInfos) {
+		super.saveAll(preInfos);		
+	}
 }

@@ -7,6 +7,14 @@ public class PlayerInfoVo {
 	private Integer point = 0;
 	private Integer pointMax = 0;
 	private Integer seat;
+	private String room;
+	
+	public String getRoom() {
+		return room;
+	}
+	public void setRoom(String room) {
+		this.room = room;
+	}
 	public Integer getSeat() {
 		return seat;
 	}

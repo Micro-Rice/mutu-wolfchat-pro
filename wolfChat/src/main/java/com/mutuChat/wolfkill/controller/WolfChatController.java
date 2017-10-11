@@ -1,6 +1,7 @@
 package com.mutuChat.wolfkill.controller;
 
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,11 +205,39 @@ public class WolfChatController {
     @RequestMapping(value = "queryChatPlayerId", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
     @ResponseBody
     public String queryChatPlayerId(HttpServletRequest request) {
-    	logger.info(cMethod.getIpAddr(request) + "-queryChatPlayerId begin" );
+    	logger.info(cMethod.getIpAddr(request) + "-queryChatPlayerId begin" );   	
     	String room = request.getParameter("room");
     	List<PlayerInfoVo> players = wolfChatService.getChatPlayerInfo(room);
     	return JsonConvertor.toJson(players);    	   	
     }
+    
+    @RequestMapping(value = "updateChatPlayerId", method = RequestMethod.POST,produces="text/html;charset=UTF-8")
+    @ResponseBody
+    public String updateChatPlayerId(HttpServletRequest request) {
+    	logger.info(cMethod.getIpAddr(request) + "-updateChatPlayerId begin");
+    	String pdata = null;
+    	try {
+			pdata = cMethod.convertStreamToString(request.getInputStream());
+		} catch (IOException e) {
+			String message = "error||pdata is null";
+			logger.error("updateChatPlayerId is error"+ message); 
+			return message;
+		}
+    	logger.info("the data from local is:" +pdata);
+    	String message = "error||pdata is null";
+        if (pdata != null) {
+        	 message = wolfChatService.updatePreChatPlayer(pdata);
+        	 if (message.startsWith("success")) {
+        		 logger.info("updateChatPlayerId is success");       		 
+        	 } else {
+        		 logger.error("updateChatPlayerId is error"+ message); 
+        	 }        	 
+        } else {
+        	logger.error("updateChatPlayerId is error"+ message); 
+        }
+        return message;   	   	
+    }
+    
 	
 	public List<String> initRoomLayout(String file,String shopName){
 	    ComMethod comMethod = new ComMethod();
