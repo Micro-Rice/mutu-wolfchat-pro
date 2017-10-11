@@ -134,7 +134,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	public ChatPlayerInfoVo getPlayerMainDataByUid(String playerUid,String matchNum) {	    
 		ChatPlayerInfoVo resultData = null;
         QueryConditions condition = new QueryConditions();
-        String orderBy = "levelNum desc";
+        String orderBy = "levelNum desc,achiveNum desc,levelMaxNum desc";
         condition.setOrderBy(orderBy);
         List<WolfKillMainInfo> mainDatas = null;
         List<WolfKillMainInfoHistory> mainHisDatas = null;
