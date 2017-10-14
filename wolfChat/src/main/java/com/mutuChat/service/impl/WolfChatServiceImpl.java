@@ -1,7 +1,9 @@
 package com.mutuChat.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,16 +19,21 @@ import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillMainInfo;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
-import com.mutuChat.wolfkill.utils.ComMethod;
 import com.mutuChat.wolfkill.utils.JsonUtils;
 import com.mutuChat.wolfkill.vo.ChatUserInfoVo;
-import com.mutuChat.wolfkill.vo.PdataVo;
 import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 @Transactional
 @Service("wolfChatService")
 public class WolfChatServiceImpl implements IWolfChatService{
 	private final static String OPENID = "openId";
 	private final static String NUMBER = "number";
+	public static final Map<String, String> roomMap = new HashMap<String, String>();
+	static {
+		roomMap.put("1", "禁忌森林");
+		roomMap.put("2", "静默狼啸");
+		roomMap.put("3", "穆图之影");
+		roomMap.put("4", "至高民意");
+	}
 	private static Logger logger = Logger.getLogger(WolfChatServiceImpl.class);
 	
 	@Resource
@@ -47,12 +54,14 @@ public class WolfChatServiceImpl implements IWolfChatService{
 	@Override
 	public void saveUserOpenInfo(ChatUserInfoVo chatUserInfoVo) {
 		String openid = chatUserInfoVo.getOpenid();
+		String openName = chatUserInfoVo.getNickname();
 		QueryConditions condition = new QueryConditions();
         condition.setConditionEqual(OPENID, openid);
 		WolfKillChatUserInfo chatUserInfo = wolfChatDao.findChatUserInfo(condition);
 		if (chatUserInfo == null) {
 			chatUserInfo = new WolfKillChatUserInfo();
 			chatUserInfo.setOpenId(openid);
+			chatUserInfo.setOpenName(openName);
 			/**
              * 需要生成不重复的短ID与openId对应
              */
@@ -139,6 +148,7 @@ public class WolfChatServiceImpl implements IWolfChatService{
             	WolfKillChatUserInfo chatUser = wolfChatDao.findChatUserInfo(condition1);
             	if (chatUser != null) {
             		String playerId = chatUser.getPlayerId();
+            		String openName = chatUser.getOpenName();
             		QueryConditions condition2 = new QueryConditions();
             		condition2.setConditionEqual("uniqueId",playerId);
             		List<WolfKillMainInfo> mainInfos = wolfkillDao.queryMainDataByCondition(condition2);
@@ -152,9 +162,10 @@ public class WolfChatServiceImpl implements IWolfChatService{
             			if (mainInfo.getLevelMaxNum() != null) {
             				pointMax = mainInfo.getLevelMaxNum();
             			}
+            			openName = mainInfo.getPlayerName();
             		}
             		PlayerInfoVo playerInfo = new PlayerInfoVo();
-            		playerInfo.setName("chatUserWeixin");
+            		playerInfo.setName(openName);
             		if (playerId != null) {
             			playerInfo.setNum(Long.parseLong(playerId));
             		}            		
@@ -176,6 +187,7 @@ public class WolfChatServiceImpl implements IWolfChatService{
 		if (pdata.startsWith("DEL")) {
 			String room = pdata.substring(3);
 			QueryConditions condition1 = new QueryConditions();
+			room = roomMap.get(room);
 	        condition1.setConditionEqual("roomId", room);
 	        List<WolfKillPregameInfo> depres = wolfChatDao.findPregameInfo(condition1);
 	        wolfChatDao.deletePregameInfo(depres);
@@ -199,6 +211,7 @@ public class WolfChatServiceImpl implements IWolfChatService{
 				preInfos.add(preInfo);
 			}
 			QueryConditions condition1 = new QueryConditions();
+			room = roomMap.get(room);
 	        condition1.setConditionEqual("roomId", room);
 	        List<WolfKillPregameInfo> depres = wolfChatDao.findPregameInfo(condition1);
 	        wolfChatDao.deletePregameInfo(depres);
