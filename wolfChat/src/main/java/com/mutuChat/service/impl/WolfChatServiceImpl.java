@@ -28,11 +28,18 @@ public class WolfChatServiceImpl implements IWolfChatService{
 	private final static String OPENID = "openId";
 	private final static String NUMBER = "number";
 	public static final Map<String, String> roomMap = new HashMap<String, String>();
+	public static final Map<String, String> encodeRoomMap = new HashMap<String, String>();
 	static {
 		roomMap.put("1", "禁忌森林");
 		roomMap.put("2", "静默狼啸");
 		roomMap.put("3", "穆图之影");
 		roomMap.put("4", "至高民意");
+	}
+	static {
+		encodeRoomMap.put("禁忌森林", "1");
+		encodeRoomMap.put("静默狼啸", "2");
+		encodeRoomMap.put("穆图之影", "3");
+		encodeRoomMap.put("至高民意", "4");
 	}
 	private static Logger logger = Logger.getLogger(WolfChatServiceImpl.class);
 	
@@ -106,26 +113,29 @@ public class WolfChatServiceImpl implements IWolfChatService{
         if (preInfo != null) {
             String room = preInfo.getRoomId();
             Integer seat = preInfo.getSeatId();
-            if (room != null && seat != null) {
+            String openId = preInfo.getOpenId();
+            if (openId != null && room != null && seat != null) {
+            	QueryConditions conditionF = new QueryConditions();
+                conditionF.setConditionEqual("openId", openId);
+                List<WolfKillPregameInfo> preInfoFs = wolfChatDao.findPregameInfo(conditionF);
+                if (!preInfoFs.isEmpty()) {
+                	wolfChatDao.deletePregameInfo(preInfoFs);
+                }
                 QueryConditions condition = new QueryConditions();
                 condition.setConditionEqual("roomId", room);
                 condition.setConditionEqual("seatId", seat);
                 List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
                 if (!preInfos.isEmpty()) {
                     WolfKillPregameInfo preInfoEd = preInfos.get(0);
-                    if (preInfoEd.getOpenId() == null || !preInfoEd.getOpenId().equals(preInfo.getOpenId())) {
-                    	preInfoEd.setOpenId(preInfo.getOpenId());
-                    	wolfChatDao.savePregameInfo(preInfoEd);
-                    	message = "success";
-                    } else {
-                        message = "success";
-                    }
+                    preInfoEd.setOpenId(preInfo.getOpenId());
+                	wolfChatDao.savePregameInfo(preInfoEd);
+                	message = "success";
                 } else {
                     wolfChatDao.savePregameInfo(preInfo);
                     message = "success";
                 }
             } else {
-                logger.error("room is " + room +"And seat is" + seat);
+            	 logger.error("openId is " +openId+" room is " + room +" And seat is " + seat);
             }
         } else {
             logger.error("WolfKillPregameInfo is null");
@@ -138,44 +148,47 @@ public class WolfChatServiceImpl implements IWolfChatService{
 		List<PlayerInfoVo> rList = new ArrayList<PlayerInfoVo>();
 		if (room != null) {
 			QueryConditions condition = new QueryConditions();
+			room = roomMap.get(room);
             condition.setConditionEqual("roomId", room);
             List<WolfKillPregameInfo> preInfos = wolfChatDao.findPregameInfo(condition);
             for (int i = 0; i < preInfos.size(); i++) {
             	WolfKillPregameInfo preInfo = preInfos.get(i);
             	String openId = preInfo.getOpenId();
-            	QueryConditions condition1 = new QueryConditions();
-            	condition1.setConditionEqual("openId",openId);
-            	WolfKillChatUserInfo chatUser = wolfChatDao.findChatUserInfo(condition1);
-            	if (chatUser != null) {
-            		String playerId = chatUser.getPlayerId();
-            		String openName = chatUser.getOpenName();
-            		QueryConditions condition2 = new QueryConditions();
-            		condition2.setConditionEqual("uniqueId",playerId);
-            		List<WolfKillMainInfo> mainInfos = wolfkillDao.queryMainDataByCondition(condition2);
-            		int point = 0;
-        			int pointMax = 0;
-            		if (!mainInfos.isEmpty()) {
-            			WolfKillMainInfo mainInfo = mainInfos.get(0);            			
-            			if (mainInfo.getLevelNum() != null) {
-            				point = mainInfo.getLevelNum();
-            			}
-            			if (mainInfo.getLevelMaxNum() != null) {
-            				pointMax = mainInfo.getLevelMaxNum();
-            			}
-            			openName = mainInfo.getPlayerName();
-            		}
-            		PlayerInfoVo playerInfo = new PlayerInfoVo();
-            		playerInfo.setName(openName);
-            		if (playerId != null) {
-            			playerInfo.setNum(Long.parseLong(playerId));
-            		}            		
-            		playerInfo.setPoint(point);
-            		playerInfo.setPointMax(pointMax);
-            		playerInfo.setSeat(preInfo.getSeatId());
-            		playerInfo.setRoom(preInfo.getRoomId());
-            		playerInfo.setTelephone(Long.parseLong(chatUser.getPlayerPhone()));
-            		rList.add(playerInfo);
-            	}
+            	if (openId != null) {
+            		QueryConditions condition1 = new QueryConditions();
+                	condition1.setConditionEqual("openId",openId);
+                	WolfKillChatUserInfo chatUser = wolfChatDao.findChatUserInfo(condition1);
+                	if (chatUser != null) {
+                		String playerId = chatUser.getPlayerId();
+                		String openName = chatUser.getOpenName();
+                		QueryConditions condition2 = new QueryConditions();
+                		condition2.setConditionEqual("uniqueId",playerId);
+                		List<WolfKillMainInfo> mainInfos = wolfkillDao.queryMainDataByCondition(condition2);
+                		int point = 0;
+            			int pointMax = 0;
+                		if (!mainInfos.isEmpty()) {
+                			WolfKillMainInfo mainInfo = mainInfos.get(0);            			
+                			if (mainInfo.getLevelNum() != null) {
+                				point = mainInfo.getLevelNum();
+                			}
+                			if (mainInfo.getLevelMaxNum() != null) {
+                				pointMax = mainInfo.getLevelMaxNum();
+                			}
+                			openName = mainInfo.getPlayerName();
+                		}
+                		PlayerInfoVo playerInfo = new PlayerInfoVo();
+                		playerInfo.setName(openName);
+                		if (playerId != null) {
+                			playerInfo.setNum(Long.parseLong(playerId));
+                		}            		
+                		playerInfo.setPoint(point);
+                		playerInfo.setPointMax(pointMax);
+                		playerInfo.setSeat(preInfo.getSeatId());
+                		playerInfo.setRoom(encodeRoomMap.get(preInfo.getRoomId()));
+                		playerInfo.setTelephone(Long.parseLong(chatUser.getPlayerPhone()));
+                		rList.add(playerInfo);
+                	}
+            	}            	
             }
 		}
 		return rList;
@@ -198,7 +211,10 @@ public class WolfChatServiceImpl implements IWolfChatService{
 				WolfKillPregameInfo preInfo = new WolfKillPregameInfo();
 				PlayerInfoVo info = pdatas.get(i);
 				preInfo.setSeatId(info.getSeat());
-				preInfo.setRoomId(info.getRoom());
+				preInfo.setRoomId(roomMap.get(info.getRoom()));
+				/**
+				 * 最后一个数据决定ROOM
+				 */
 				room = info.getRoom();
 				Long playerId = info.getNum();
 				QueryConditions condition = new QueryConditions();

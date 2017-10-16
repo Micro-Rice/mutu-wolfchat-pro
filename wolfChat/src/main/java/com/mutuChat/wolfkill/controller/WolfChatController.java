@@ -159,25 +159,14 @@ public class WolfChatController {
 	    result.put("message",message);
 	    return result;	    
 	}
-	@RequestMapping(value = "showResp", method = RequestMethod.GET,produces="text/html;charset=UTF-8")
+	@ResponseBody
+	@RequestMapping(value = "showResp", method = RequestMethod.GET)
     public ModelAndView showResp(HttpServletRequest request) {
 	    ModelAndView mav = new ModelAndView("selectSuc");
-	    String roomIdCode = request.getParameter("rz");
-        String seatIdCode = request.getParameter("sw");
-        String room = "";
-        String seat = "";
-        if (roomIdCode != null && seatIdCode != null) {  
-            try {
-                room = new String(Base64.decodeBase64(roomIdCode),"utf-8");
-                seat = new String(Base64.decodeBase64(seatIdCode),"utf-8");
-            } catch (UnsupportedEncodingException e) {
-                logger.error("DecodeBase64 is" +e);
-            }
-        } else {
-            logger.error("roomCode or seatCode is null");
-        }
-        mav.addObject("room",room);
-        mav.addObject("seat",seat);
+	    String roomId = request.getParameter("rz");
+        String seatId = request.getParameter("sw");
+        mav.addObject("room",roomId);
+        mav.addObject("seat",seatId);
 	    return mav;	    
 	}
 	

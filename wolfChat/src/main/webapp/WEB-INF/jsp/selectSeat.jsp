@@ -135,7 +135,8 @@ $(function (){
 			success: function(data){
 				if ("success" ==  data.message) {
 					$.alert("选座成功!",function() {
-						var url = "showResp?rz="+r+"&sw="+s;
+						var r = base64encode((roomId));
+						var url = "showResp?rz="+roomId+"&sw="+seat;
 						window.location.href = url;
 					});
 				} else {
