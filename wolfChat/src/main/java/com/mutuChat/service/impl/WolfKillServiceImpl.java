@@ -668,18 +668,44 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	@Override
 	public void updatePospalMemInfo(List<ImageResponseDataDetail> rdds) {
 		List<WolfKillPospalInfo> posInfos = new ArrayList<WolfKillPospalInfo>();
+		List<String> userNums = new ArrayList<String>();
+		List<MemInfoVo> memInfos = new ArrayList<MemInfoVo>();
+		for (int i = 0; i < rdds.size(); i++) {
+			ImageResponseDataDetail rdd = rdds.get(i);
+			List<MemInfoVo> rInfos = rdd.getResult();
+			for (int j = 0; j < rInfos.size(); j++) {
+				MemInfoVo rInfo = rInfos.get(j);
+				if (!"1".equals(rInfo.getEnable())) {
+					continue;
+				}
+				memInfos.add(rInfo);
+			}
+		}
 		QueryConditions condition = new QueryConditions();
 		try {
 			List<WolfKillPospalInfo> pospalDatas = wolfKillDao.queryPospalPoint(condition);
-			wolfKillDao.deletePospalMemList(pospalDatas);
-			for (int i = 0; i < rdds.size(); i++) {
-				ImageResponseDataDetail rdd = rdds.get(i);
-				List<MemInfoVo> memInfos = rdd.getResult();
+			for (int i = 0; i < pospalDatas.size(); i++) {
+				WolfKillPospalInfo posData = pospalDatas.get(i);
+				String userNum = posData.getNumber();
+				int userPoint = 0;
+				if (posData.getPoint() != null) {
+					userPoint = posData.getPoint().intValue();
+				}
+				userNums.add(userNum);
 				for (int j = 0; j < memInfos.size(); j++) {
-					MemInfoVo minfo = memInfos.get(j);
-					if (!"1".equals(minfo.getEnable())) {
-						continue;
+					MemInfoVo memInfo = memInfos.get(j);
+					String memPoint = memInfo.getPoint();
+					if (userNum != null && userNum.equals(memInfo.getNumber())
+							&& userPoint != Float.parseFloat(memPoint)) {
+						posData.setPoint(Float.parseFloat(memPoint));
+						break;
 					}
+				}
+			}
+			for (int i = 0; i < memInfos.size(); i++) {
+				MemInfoVo minfo = memInfos.get(i);
+				String number = minfo.getNumber();
+				if (!userNums.contains(number)) {
 					WolfKillPospalInfo pinfo = new WolfKillPospalInfo();
 					pinfo.setCustomerUid(minfo.getCustomerUid());
 					pinfo.setCategoryName(minfo.getCategoryName());
@@ -697,9 +723,10 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 					pinfo.setPoint(Float.parseFloat(minfo.getPoint()));
 					pinfo.setQq(minfo.getQq());
 					posInfos.add(pinfo);
-					}
+				}
 			}
-			wolfKillDao.savePospalMemList(posInfos);
+			pospalDatas.addAll(posInfos);
+			wolfKillDao.savePospalMemList(pospalDatas);
 		} catch (Exception e) {
 			logger.error("updatePospalMemInfo error :" +e);
 			throw new RuntimeException(e);

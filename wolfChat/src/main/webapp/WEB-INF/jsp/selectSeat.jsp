@@ -56,12 +56,17 @@ $(function (){
 			}],
 		});
 	}
+	var seats=new Array("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20");
+	$("#seat").picker({
+		title : "请选择您的座位号",
+		cols : [{
+			textAlign: 'center',
+			values:seats,
+		}],
+	});
 	var pathImage = "<%=basePath%>images/mutu.jpg";
 	var $img = '<img style="width:120px;height:120px" src="'+pathImage+'"/>';
 	$("#circleImg").append($img);
-	
-	
-	
 	if (!!rMsg) {
 		$.alert("系统繁忙,请稍后再试!");
 	} else {
@@ -106,43 +111,42 @@ $(function (){
 	});
 	
 	$("#loginBtn").click(function(){
-		if (checkSeat()) {
-			var openidEncode;
-			if (!!userInfo) {
-				var openid = userInfo.openId;
-				openidEncode = base64encode(openid);			
-			}
-			var roomId = $("#room").val();
-			var seat = $("#seat").val();
-			var r = base64encode(utf16to8(roomId));
-			var s = base64encode(seat);
-			var pdata = {
-					"pq" : openidEncode,
-					"rz"  : r,
-					"sw" : s,		
-			};
-			$.ajax({
-				url:"<%=basePath%>gotoSelect",
-				type:"GET",
-				cache : false,
-				//设置同步，避免和自动刷新冲突导致数据不同步
-				async: false,
-				data : pdata,
-				success: function(data){
-					if ("success" ==  data.message) {
-						$.alert("选座成功!",function() {
-							var url = "showResp?rz="+r+"&sw="+s;
-							window.location.href = url;
-						});
-					} else {
-						$.alert("系统繁忙,请稍后再试!");
-					} 
-				},
-				error: function(){
+		var openidEncode;
+		if (!!userInfo) {
+			var openid = userInfo.openId;
+			openidEncode = base64encode(openid);			
+		}
+		var roomId = $("#room").val();
+		var seat = $("#seat").val();
+		var r = base64encode(utf16to8(roomId));
+		var s = base64encode(seat);
+		var pdata = {
+				"pq" : openidEncode,
+				"rz"  : r,
+				"sw" : s,		
+		};
+		$.ajax({
+			url:"<%=basePath%>gotoSelect",
+			type:"GET",
+			cache : false,
+			//设置同步，避免和自动刷新冲突导致数据不同步
+			async: false,
+			data : pdata,
+			success: function(data){
+				if ("success" ==  data.message) {
+					$.alert("选座成功!",function() {
+						var r = base64encode((roomId));
+						var url = "showResp?rz="+roomId+"&sw="+seat;
+						window.location.href = url;
+					});
+				} else {
 					$.alert("系统繁忙,请稍后再试!");
-				}
-			});
-		}			
+				} 
+			},
+			error: function(){
+				$.alert("系统繁忙,请稍后再试!");
+			}
+		});			
 	});	
 
 	$("#userform").on("focus",".weui-input",function(){
@@ -200,7 +204,7 @@ $(function (){
 					<label class="weui-label">座位号：</label>
 				</div>
 				<div class="weui-cell_bd weui-cell_primary">
-					<input id="seat" tabindex="2" class="weui-input" type="text" placeholder="请输入1-20座位号">
+					<input id="seat" tabindex="2" class="weui-input" type="text">
 				</div>
 				<div class="weui-cell__ft">
                      <i class="weui-icon-warn" id="seatErr"></i>

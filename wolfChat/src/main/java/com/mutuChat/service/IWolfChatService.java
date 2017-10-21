@@ -1,9 +1,12 @@
 package com.mutuChat.service;
 
+import java.util.List;
+
 import com.mutuChat.wolfkill.model.WolfKillChatUserInfo;
 import com.mutuChat.wolfkill.model.WolfKillPospalInfo;
 import com.mutuChat.wolfkill.model.WolfKillPregameInfo;
 import com.mutuChat.wolfkill.vo.ChatUserInfoVo;
+import com.mutuChat.wolfkill.vo.PlayerInfoVo;
 
 public interface IWolfChatService {
 	/**
@@ -32,5 +35,9 @@ public interface IWolfChatService {
 	 public WolfKillPregameInfo getPregameInfoByOpenId(String openId);    
 		
 	 public String saveRoomAndSeatInfo(WolfKillPregameInfo preInfo);
+	 
+	 public List<PlayerInfoVo> getChatPlayerInfo(String room);
+	 
+	 public String updatePreChatPlayer(String pdata);
 	 
 }
