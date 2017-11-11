@@ -109,7 +109,7 @@ public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
 	}
 
 	@Override
-	public WolfKillChatUserInfo getOutAndSaveChatPlayerInfo(String code, HttpSession session, String backMsg) {
+	public WolfKillChatUserInfo getOutAndSaveChatPlayerInfo(String code, HttpSession session,String backmsg,String shopName) {
 		String openid = null;
 		WolfKillChatUserInfo chatUser = null;
 		logger.info("the weixin code is " +code);
@@ -127,8 +127,8 @@ public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
 				if (errorMsg == null) {
 					return null;
 				}
-				backMsg = errorMsg.getErrmsg();
-				logger.info("the error Msg is"+backMsg);
+				backmsg = errorMsg.getErrmsg();
+				logger.info("the error Msg is"+backmsg);
 			} else {
 				ChatTokenVo tokenContent = JsonConvertor.fromJson(msg,ChatTokenVo.class);
 				if (tokenContent == null) {
@@ -145,13 +145,13 @@ public class WolfChatBusiServiceImpl implements IWolfChatBusiService{
 					if (errorMsg == null) {
 						return null;
 					}
-					backMsg = errorMsg.getErrmsg();
-					logger.info("the wxBack openid is"+openid+ "And the error Msg is" +backMsg);
+					backmsg = errorMsg.getErrmsg();
+					logger.info("the wxBack openid is"+openid+ "And the error Msg is" +backmsg);
 				} else {
 					logger.info("the wxBack openid is"+openid);	
 					logger.info("the backMsg  is"+infoMsg);
 					ChatUserInfoVo userInfoContent = JsonConvertor.fromJson(infoMsg,ChatUserInfoVo.class);						
-					wolfChatOutService.saveUserOpenInfo(userInfoContent);		
+					wolfChatOutService.saveUserOpenInfo(userInfoContent,shopName);		
 				}
 			}			
 		}

@@ -19,5 +19,5 @@ public interface IWolfChatBusiService {
 	
 	String bindUserInfo(String playerId, String phone,String openid);
 	
-	WolfKillChatUserInfo  getOutAndSaveChatPlayerInfo(String code,HttpSession session,String backMsg);
+	WolfKillChatUserInfo  getOutAndSaveChatPlayerInfo(String code,HttpSession session,String backMsg,String shopName);
 }

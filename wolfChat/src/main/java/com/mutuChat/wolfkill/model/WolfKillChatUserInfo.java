@@ -27,6 +27,7 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 	private String openId;
 	private String openImg;
 	private String openName;
+	private String shopName;
 
 	public WolfKillChatUserInfo() {
 	}
@@ -98,6 +99,15 @@ public class WolfKillChatUserInfo implements java.io.Serializable {
 
 	public void setOpenName(String openName) {
 		this.openName = openName;
+	}
+	
+	@Column(name = "SHOP_NAME", length = 10)
+	public String getShopName() {
+		return this.shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
 	}
 
 }
