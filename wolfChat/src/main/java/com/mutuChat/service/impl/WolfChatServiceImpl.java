@@ -131,7 +131,8 @@ public class WolfChatServiceImpl implements IWolfChatService{
                 	wolfChatDao.savePregameInfo(preInfoEd);
                 	message = "success";
                 } else {
-                    wolfChatDao.savePregameInfo(preInfo);
+                	preInfo.setId(0);
+                	wolfChatDao.savePregameInfo(preInfo);
                     message = "success";
                 }
             } else {
