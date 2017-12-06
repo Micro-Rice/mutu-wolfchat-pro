@@ -306,11 +306,19 @@ function getDisName(name) {
 	} else if (name == "devil") {
 		disName = "恶魔";
 	} else if (name == "wolfboy") {
-		disName = "野孩子"
+		disName = "野孩子";
 	} else if (name == "thief") {
-		disName = "盗贼"
+		disName = "盗贼";
 	} else if (name == "bear") {
-		disName = "熊"
+		disName = "熊";
+	} else if (name == "nightFox") {
+		disName = "九尾狐";
+	} else if (name == "ghostRider") {
+		disName = "恶灵骑士";
+	} else if (name == "kingWolfNight") {
+		disName = "狼王";
+	} else if (name == "magician") {
+		disName = "魔术师";
 	}
 	return disName;
 }

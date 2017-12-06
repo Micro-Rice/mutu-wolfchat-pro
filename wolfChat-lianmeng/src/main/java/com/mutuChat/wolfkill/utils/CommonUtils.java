@@ -25,6 +25,10 @@ public class CommonUtils {
 	public final static String THIEF ="thief";
 	public final static String WOLFBOY ="wolfboy";
 	public final static String BEAR ="bear";
+	public final static String NIGHTFOX ="nightFox";
+	public final static String GHOSTRIDER ="ghostRider";
+	public final static String KINGWOLFNIGHT ="kingWolfNight";
+	public final static String MAGICIAN ="magician";
 	public final static String QTZL = "青铜战狼";
 	public final static String BYZL = "白银战狼";
 	public final static String HJZL = "黄金战狼";

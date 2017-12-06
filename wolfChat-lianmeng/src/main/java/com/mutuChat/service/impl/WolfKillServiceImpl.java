@@ -493,7 +493,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	            } else if ("2".equals(cjSign) || "3".equals(cjSign)) {
 	                r = r - 10;
 	            }
-	    } else if (CommonUtils.WHITEWOLF.equals(roleName) || CommonUtils.BEAUTYWOLF.equals(roleName)) {
+	    } else if (CommonUtils.WHITEWOLF.equals(roleName) || CommonUtils.BEAUTYWOLF.equals(roleName)
+	    		|| CommonUtils.KINGWOLFNIGHT.equals(roleName)) {
 	            if ("1".equals(cjSign)) {
 	                info.setAchiveFre(1);
 	                r = r + 30;
@@ -504,6 +505,11 @@ public class WolfKillServiceImpl implements IWolfKillServive{
 	                info.setAchiveFre(1);
 	                r = r + 20;
 	            }
+	        } else if (CommonUtils.GHOSTRIDER.equals(roleName)) {
+	        	if ("1".equals(cjSign)) {
+	        		info.setAchiveFre(1);
+	        		r = r + 20;
+	        	}
 	        }
 	   return r;
 	}
@@ -634,7 +640,15 @@ public class WolfKillServiceImpl implements IWolfKillServive{
     		result = CommonUtils.WOLFBOY;
     	} else if ("17".equals(sign)) {
     		result = CommonUtils.BEAR;
-    	}  
+    	} else if ("19".equals(sign)) {
+    		result = CommonUtils.NIGHTFOX;
+    	} else if ("20".equals(sign)) {
+    		result = CommonUtils.GHOSTRIDER;
+    	} else if ("21".equals(sign)) {
+    		result = CommonUtils.KINGWOLFNIGHT;
+    	} else if ("22".equals(sign)) {
+    		result = CommonUtils.MAGICIAN;
+    	} 
     	return result;
     }
     private BigDecimal computeRate (int a1, int a2) {
