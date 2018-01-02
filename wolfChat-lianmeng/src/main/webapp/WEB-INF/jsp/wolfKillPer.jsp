@@ -272,6 +272,8 @@ function getCgName(name) {
 		cgName = "正义审判";
 	} else if (name == "blackman") {
 		cgName = "等价交换";
+	} else if (name == "ghostRider") {
+		cgName = "恶灵附身";
 	}
 	return cgName;
 }
