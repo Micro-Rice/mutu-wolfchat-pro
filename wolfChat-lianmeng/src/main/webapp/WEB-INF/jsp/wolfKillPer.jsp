@@ -65,8 +65,15 @@ $(function (){
 	var uid = "${uniqueId}";
 	playerData = eval("("+playerData+")");
 	if (!!playerData) {
-		creatTablePer(playerData);
 		$("#sequence").text(seq);
+		var achiveName = playerData.pAchiveName;
+		if (!!achiveName) {
+			creatTableHoner(achiveName);
+		} else {
+			$("#honerTitle").css("display","none");
+			$("#honerTable").css("display","none");
+		}
+		creatTablePer(playerData);		
 		var roleData = playerData.roleInfos
 		if (roleData.length > 0) {
 			creatTableInfo(roleData);
@@ -115,6 +122,35 @@ function creatImg(user,sequence) {
 function createFailerInfo() {
 	$("#maincontainer").empty();
 	$("#maincontainer").append("<div class='stitle'>没有该玩家的详细数据！</div>");
+}
+function creatTableHoner(achiveName) {
+	var aName = [];
+	if (achiveName.indexOf("_") > -1) {
+		aName = achiveName.split("_");
+	} else {
+		aName.push(achiveName);
+	}
+	var trNum = parseInt(aName.length/4) + 1;
+	for (var i = 0; i < trNum; i++) {
+		var $tr = $('<tr id=Atr_'+i+' style="text-align:center"></tr>');
+		for (var j = 0; j < 4; j++) {
+			if (i*4+j < aName.length) {
+				var ach = aName[i*4+j];
+				var $img;
+				if (ach.indexOf("第一") > -1 || ach.indexOf("冠军") > -1 ) {
+					$img = '<img style="width:40px;height:57px;vertical-align:middle" src="<%=basePath%>images/guanjun.png"/>';
+				} else if (ach.indexOf("第二") > -1 || ach.indexOf("亚军") > -1 ) {
+					$img = '<img style="width:40px;height:57px;vertical-align:middle" src="<%=basePath%>images/yajun.png"/>';
+				} else {
+					$img = '<img style="width:40px;height:57px;vertical-align:middle" src="<%=basePath%>images/jijun.png"/>';
+				}
+				var temp='<td><a>'+$img+'<span style="margin-left:5px;">'+ach+'</span></a></td>';
+				$td = $(temp);
+				$td.appendTo($tr);
+			}			
+		}
+		$("#honerTable tbody").append($tr);
+	}
 }
 function creatTablePer(mainData) {	
 	var name = mainData.pName;
@@ -264,7 +300,7 @@ function getCgName(name) {
 		cgName = "爱神永恒";
 	} else if (name == "walker") {
 		cgName = "片甲不留";
-	} else if (name == "whitewolf") {
+	} else if (name == "whitewolf" || name == "kingWolfNight") {
 		cgName = "邪恶领袖";
 	} else if (name == "beautywolf") {
 		cgName = "神之魅惑";
@@ -448,6 +484,11 @@ function getDisName(name) {
 					<!-- <div style="font-size: 14px;color: #a9cf54;">玩家等级</div> -->
 					</div>
 				</div>
+				<div class="stitle" id="honerTitle"> 获得荣誉</div>
+				<table id="honerTable" class="table" style="width: 95%; margin-left: auto;margin-right: auto;margin-bottom: 20px;margin-top: 10px;">
+					<tbody class="table-player-detail">
+					</tbody>
+				</table>
 				<div class="stitle"> 阵营统计 </div>
 				<table id="sideTable" class="table table-hover table-striped table-list table-thead-left" style="width: 95%; margin-left: auto;margin-right: auto;margin-bottom: 20px;margin-top: 10px;">
 					<thead>

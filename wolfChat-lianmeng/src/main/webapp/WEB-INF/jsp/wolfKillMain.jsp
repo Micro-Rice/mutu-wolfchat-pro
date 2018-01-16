@@ -72,6 +72,14 @@ $(function (){
 		var url = "forwardPerInfo?playerName=" + palyerNameEncode + "&seq=" + sequenceEncode + "&mnum=" + matchNumEncode;
 		window.location.href = url;
 	});
+	$("#filterContainer").on('click','.matchLi',function(){
+		var text = $(this).text();
+		$("#selectTime").empty();
+		$("#selectTime").append(text);		
+		var id = $(this).attr("id");
+		matchNum = id.split("_")[1];	
+		getLocalMatchData(matchNum);		
+	});
 	$("#seconudbarOuter").on('click','.matchLi',function(){
 		if ($(this).hasClass("active-s")) {
 			return;
@@ -150,8 +158,18 @@ function createInfoTable(dataObj) {
 	for (var i = 0; i < length; i++) {
 		var killdata = dataObj[i];
 		var $tr = $('<tr id=Ftr_'+i+' class="infoTr"></tr>');
-		
-		var temp = '<td id=squence_'+i+'>'+killdata.pOrder+'</td>';
+		var temp;
+		var tsign = false;
+		if (!!killdata.pAchiveName) {
+			if (killdata.pAchiveName.indexOf("第一") > -1 || killdata.pAchiveName.indexOf("冠军") > -1) {
+				tsign = true;
+			}
+		}
+		if (tsign) {			
+			temp = '<td id=squence_'+i+'>'+killdata.pOrder+'<img style="width:20px;height:28px;vertical-align:middle" src="<%=basePath%>images/guanjun.png"/></td>';
+		} else {
+			temp = '<td id=squence_'+i+'>'+killdata.pOrder+'</td>';
+		}
 		$td = $(temp);
 		$td.appendTo($tr);
 		
@@ -161,8 +179,13 @@ function createInfoTable(dataObj) {
 		} else {
 			pathImage = "<%=basePath%>images/mutu.jpg";
 		}
-		var temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;" src="'+pathImage+'"/>'
-		+''+killdata.pName+'</a></td>';
+		if (tsign) {
+			temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;border:solid;border-color:gold;" src="'+pathImage+'"/>'
+			+''+killdata.pName+'</a></td>';
+		} else {
+			temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;" src="'+pathImage+'"/>'
+			+''+killdata.pName+'</a></td>';
+		}
 		$td = $(temp);
 		$td.appendTo($tr);
 				
@@ -264,26 +287,57 @@ function validAndOrder() {
 		<div class="main-container" style="margin-top:0px;margin-bottom:1px;padding-bottom:1px;">
 			 <div id= "seconudbarOuter" class="secoundbar-outer">
 				<ul class="secoundbar" style="margin-top: 20px;margin-bottom: 0px">
-					<li id = "mutuS_1" class="matchLi" style="cursor:pointer;">
-						MUTU S1赛季
-					</li>
-					<li id = "mutuS_2" class="matchLi" style="cursor:pointer;">
-						MUTU S2赛季
-					</li>
-					<li  id = "mutuS_3" class="matchLi" style="cursor:pointer;">
-						MUTU S3赛季
-					</li>
-					<li  id = "mutuS_0" class="matchLi active-s" style="cursor:pointer;">
-						MUTU S4赛季
+					<li class=" active-s" style="cursor:pointer;">
+						玩家排行
 					</li>
 				</ul>
 			</div> 
 			<div id= "maincontainer" class="container" style="width:1000px;">
+			<div class="filter-container" style="padding-top: 18px;width:525px;margin-bottom: 20px;margin-top:20px;" id="filterContainer">
+				<div style="padding-left:0px">
+					<div>
+						<div class="nabtn-title">赛季选择</div>						
+						<div class="btn-group bootstrap-select spanselect">
+						<button type="button" class="btn dropdown-toggle btn-inverse" data-toggle="dropdown">
+							<div class="filter-option pull-left" id="selectTime">S4 赛季</div>&nbsp;<div class="caret"></div>
+						</button>
+						<div class="dropdown-menu open">
+						<ul class="dropdown-menu inner">
+							<li rel="0" class="selected">
+								<a tabindex="0" class="matchLi" id="matchLi_1" >
+									<span class="text">S1 赛季</span>
+									<i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
+								</a>
+							</li>
+							<li rel="1">
+								<a tabindex="0" class="matchLi" id="matchLi_2">
+									<span class="text">S2 赛季</span>
+									<i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
+								</a>
+							</li>
+							<li rel="2">
+								<a tabindex="0" class="matchLi"  id="matchLi_3">
+									<span class="text">S3 赛季</span>
+									<i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
+								</a>
+							</li>
+							<li rel="3">
+								<a tabindex="0" class="matchLi"  id="matchLi_0">
+									<span class="text">S4 赛季</span>
+									<i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
+								</a>
+							</li>
+						</ul>
+						</div>
+					</div>
+				</div>
+				</div>
+			</div>
 				<table id="mainTable" class="table table-hover table-striped table-list table-thead-left" style="width: 95%; margin-left: auto;margin-right: auto;margin-bottom: 20px;margin-top: 10px;">
 					<thead>
 						<tr>
-							<th style="width:5%">名次</th>
-							<th style="width:25%">玩家ID</th>
+							<th style="width:6%">名次</th>
+							<th style="width:24%">玩家ID</th>
 							<th style="width:15%">玩家等级</th>	
 							<th style="width:15%">玩家积分</th>						
 							<th style="width:15%">总胜率</th>							

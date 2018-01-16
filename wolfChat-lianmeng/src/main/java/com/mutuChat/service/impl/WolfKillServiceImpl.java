@@ -546,7 +546,8 @@ public class WolfKillServiceImpl implements IWolfKillServive{
         player.setpLevel(level);
         player.setpLevelNum(levelNum);
         player.setpOrder(order);
-        player.setpTag(urlImg);      
+        player.setpTag(urlImg); 
+        player.setpAchiveName(playerData.getAchiveName());
         return player;
     }
     
@@ -597,7 +598,7 @@ public class WolfKillServiceImpl implements IWolfKillServive{
          player.setpLevelMnum(maxLevelNum);
          player.setpAchiveNum(achiveNum);
          player.setpTag(urlImg);
-        
+         player.setpAchiveName(playerData.getAchiveName());
          return player;
          
     }

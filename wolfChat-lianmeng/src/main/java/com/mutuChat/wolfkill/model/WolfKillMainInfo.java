@@ -33,6 +33,7 @@ public class WolfKillMainInfo implements java.io.Serializable {
 	private String level;
 	private Integer levelMaxNum;
 	private Integer achiveNum;
+	private String achiveName;
 
 	public WolfKillMainInfo() {
 	}
@@ -186,6 +187,15 @@ public class WolfKillMainInfo implements java.io.Serializable {
 
 	public void setAchiveNum(Integer achiveNum) {
 		this.achiveNum = achiveNum;
+	}
+	
+	@Column(name = "ACHIVE_NAME", length = 255)
+	public String getAchiveName() {
+		return this.achiveName;
+	}
+
+	public void setAchiveName(String achiveName) {
+		this.achiveName = achiveName;
 	}
 
 }

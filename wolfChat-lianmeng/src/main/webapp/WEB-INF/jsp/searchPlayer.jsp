@@ -135,7 +135,17 @@ function createInfoTable(dataObj) {
 		$td = $(temp);
 		$td.appendTo($tr);
 		
-		temp = '<td id=squence_'+i+'>'+killdata.pOrder+'</td>';
+		var tsign = false;
+		if (!!killdata.pAchiveName) {
+			if (killdata.pAchiveName.indexOf("第一") > -1 || killdata.pAchiveName.indexOf("冠军") > -1) {
+				tsign = true;
+			}
+		}
+		if (tsign) {			
+			temp = '<td id=squence_'+i+'>'+killdata.pOrder+'<img style="width:20px;height:28px;vertical-align:middle" src="<%=basePath%>images/guanjun.png"/></td>';
+		} else {
+			temp = '<td id=squence_'+i+'>'+killdata.pOrder+'</td>';
+		}
 		$td = $(temp);
 		$td.appendTo($tr);
 		
@@ -146,8 +156,13 @@ function createInfoTable(dataObj) {
 			pathImage = "<%=basePath%>images/mutu.jpg";
 		}
 		
-		var temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;" src="'+pathImage+'">'
-		+''+killdata.pName+'</a></td>';
+		if (tsign) {
+			temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;border:solid;border-color:gold;" src="'+pathImage+'"/>'
+			+''+killdata.pName+'</a></td>';
+		} else {
+			temp='<td id=name_'+i+'><a href="javascript:void(0);"><img class="match-avatars-img" style="height:36px;width:36px;margin: 4px;" src="'+pathImage+'"/>'
+			+''+killdata.pName+'</a></td>';
+		}
 		$td = $(temp);
 		$td.appendTo($tr);
 				
@@ -252,8 +267,8 @@ function createFailerInfo() {
 					<thead>
 						<tr>
 							<th style="width:5%">赛季</th>
-							<th style="width:5%">名次</th>
-							<th style="width:25%">玩家ID</th>
+							<th style="width:6%">名次</th>
+							<th style="width:24%">玩家ID</th>
 							<th style="width:10%">玩家等级</th>
 							<th style="width:15%">玩家积分</th>						
 							<th style="width:15%">总胜率</th>							

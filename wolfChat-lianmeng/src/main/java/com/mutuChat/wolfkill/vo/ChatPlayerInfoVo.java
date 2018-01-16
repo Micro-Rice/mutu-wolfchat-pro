@@ -22,12 +22,19 @@ public class ChatPlayerInfoVo {
 	BigDecimal pOthRate;
 	//网页显示用
 	String playerId;
+	String pAchiveName;
 	int mvp;
 	String season;
 	List<RoleInfoVo> roleInfos = new ArrayList<RoleInfoVo>();
 	List<HisMatchVo> hisMatchs = new ArrayList<HisMatchVo>();
 	
 	
+	public String getpAchiveName() {
+		return pAchiveName;
+	}
+	public void setpAchiveName(String pAchiveName) {
+		this.pAchiveName = pAchiveName;
+	}
 	public String getSeason() {
 		return season;
 	}
